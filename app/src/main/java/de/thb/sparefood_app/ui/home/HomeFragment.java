@@ -1,14 +1,20 @@
 package de.thb.sparefood_app.ui.home;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
+import com.yuyakaido.android.cardstackview.CardStackListener;
+import com.yuyakaido.android.cardstackview.CardStackView;
+import com.yuyakaido.android.cardstackview.Direction;
+
+import java.util.ArrayList;
 
 import de.thb.sparefood_app.databinding.FragmentHomeBinding;
 
@@ -24,8 +30,43 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        ArrayList<Card> myCards = new ArrayList<>();
+        myCards.add(new Card("Test1"));
+        myCards.add(new Card("Test2"));
+
+        CardStackView cards = binding.cardStackView;
+        cards.setLayoutManager(new CardStackLayoutManager(getContext(), new CardStackListener() {
+            @Override
+            public void onCardDragging(Direction direction, float ratio) {
+
+            }
+
+            @Override
+            public void onCardSwiped(Direction direction) {
+                Log.d("SpareFood_Debug", "You swiped to direction " + direction.name());
+            }
+
+            @Override
+            public void onCardRewound() {
+
+            }
+
+            @Override
+            public void onCardCanceled() {
+
+            }
+
+            @Override
+            public void onCardAppeared(View view, int position) {
+
+            }
+
+            @Override
+            public void onCardDisappeared(View view, int position) {
+
+            }
+        }));
+        cards.setAdapter(new CardStackAdapter(myCards));
         return root;
     }
 

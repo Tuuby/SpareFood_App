@@ -45,7 +45,8 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         }
 
         public void bind(Card card) {
-            cardLayoutBinding.cardTextView.setText(card.getText());
+            cardLayoutBinding.cardTitle.setText(card.getText());
+            cardLayoutBinding.cardDistance.setText(card.getDistance());
         }
     }
 }

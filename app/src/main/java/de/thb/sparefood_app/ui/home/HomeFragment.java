@@ -13,6 +13,7 @@ import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
 import com.yuyakaido.android.cardstackview.CardStackView;
 import com.yuyakaido.android.cardstackview.Direction;
+import com.yuyakaido.android.cardstackview.StackFrom;
 
 import java.util.ArrayList;
 
@@ -31,11 +32,13 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         ArrayList<Card> myCards = new ArrayList<>();
-        myCards.add(new Card("Test1"));
-        myCards.add(new Card("Test2"));
+        myCards.add(new Card("Lorem", "3.4km"));
+        myCards.add(new Card("Ipsum", "7.8km"));
+        myCards.add(new Card("Dolor", "2.1km"));
+        myCards.add(new Card("Sit amet", "4.9km"));
 
         CardStackView cards = binding.cardStackView;
-        cards.setLayoutManager(new CardStackLayoutManager(getContext(), new CardStackListener() {
+        CardStackLayoutManager cslManager = new CardStackLayoutManager(getContext(), new CardStackListener() {
             @Override
             public void onCardDragging(Direction direction, float ratio) {
 
@@ -65,7 +68,9 @@ public class HomeFragment extends Fragment {
             public void onCardDisappeared(View view, int position) {
 
             }
-        }));
+        });
+        cslManager.setStackFrom(StackFrom.Top);
+        cards.setLayoutManager(cslManager);
         cards.setAdapter(new CardStackAdapter(myCards));
         return root;
     }

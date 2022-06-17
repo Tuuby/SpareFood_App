@@ -24,8 +24,8 @@ public class NewEntryFragment extends Fragment {
         binding = FragmentNewEntryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textNewEntry;
-        plusViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+//        final TextView textView = binding.textNewEntry;
+//        plusViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

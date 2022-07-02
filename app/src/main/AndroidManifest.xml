@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="de.thb.sparefood_app">
 
-    <uses-permission android:name="android.permission.CAMERA"> </uses-permission>
+<!--    <uses-permission android:name="android.permission.CAMERA"> </uses-permission>-->
     <uses-feature android:name="android.hardware.camera" android:required="false"></uses-feature>
 
     <application

@@ -1,10 +1,16 @@
 package de.thb.sparefood_app.ui.new_entry;
 
 import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +23,14 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import de.thb.sparefood_app.R;
 import de.thb.sparefood_app.databinding.FragmentNewEntryBinding;
@@ -32,6 +44,10 @@ public class NewEntryFragment extends Fragment {
     // Define the button and imageview type variable
     ImageButton camera_open_id;
     ImageView click_image_id;
+//    Context context = getContext();
+    String currentPhotoPath;
+
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -52,7 +68,7 @@ public class NewEntryFragment extends Fragment {
 //                            doSomeOperations();
 
                                 // BitMap is data structure of image file
-                                // which stor the image in memory
+                                // which stores the image in memory
                                 Bitmap photo = (Bitmap) data.getExtras()
                                         .get("data");
 
@@ -62,33 +78,57 @@ public class NewEntryFragment extends Fragment {
                     }
                 });
 
+        try {
+            Log.d("FileTest TAG", "" + createImageFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // CAMERA Logic
-        camera_open_id = (ImageButton)binding.cameraButton;
-        click_image_id = (ImageView)binding.mealImage;
-
-        camera_open_id.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v)
-            {
-
-                // Create the camera_intent ACTION_IMAGE_CAPTURE
-                // it will open the camera for capture the image
-                Intent camera_intent
-                        = new Intent(MediaStore
-                        .ACTION_IMAGE_CAPTURE);
-
-                // Start the activity with camera_intent,
-                // and request pic id
-//                startActivityForResult(camera_intent, pic_id);
-                someActivityResultLauncher.launch(camera_intent);
-            }
-        });
+//        camera_open_id = (ImageButton)binding.cameraButton;
+//        click_image_id = (ImageView)binding.mealImage;
+//
+//        camera_open_id.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v)
+//            {
+//
+//                // Create the camera_intent ACTION_IMAGE_CAPTURE
+//                // it will open the camera for capture the image
+//                Intent camera_intent
+//                        = new Intent(MediaStore
+//                        .ACTION_IMAGE_CAPTURE);
+//
+//                // Start the activity with camera_intent,
+//                // and request pic id
+////                startActivityForResult(camera_intent, pic_id);
+//                someActivityResultLauncher.launch(camera_intent);
+//            }
+//        });
 
 //        final TextView textView = binding.textNewEntry;
 //        plusViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
+
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
 
 //    public void openSomeActivityForResult() {
 //        Intent intent = new Intent(this, SomeActivity.class);

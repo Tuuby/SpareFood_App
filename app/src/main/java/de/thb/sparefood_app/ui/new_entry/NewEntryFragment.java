@@ -2,16 +2,12 @@ package de.thb.sparefood_app.ui.new_entry;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -20,8 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -34,6 +28,8 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.button.MaterialButton;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -41,7 +37,6 @@ import java.util.Date;
 
 import de.thb.sparefood_app.R;
 import de.thb.sparefood_app.databinding.FragmentNewEntryBinding;
-import de.thb.sparefood_app.MainActivity;
 
 
 public class NewEntryFragment extends Fragment {
@@ -50,8 +45,7 @@ public class NewEntryFragment extends Fragment {
     private static final int pic_id = 123;
     // Define the button and imageview type variable
     ImageButton camera_open_id;
-    ImageView click_image_id;
-    //    Context context = getContext();
+    MaterialButton filterButtonDummy;
     String currentPhotoPath;
 
 
@@ -64,7 +58,6 @@ public class NewEntryFragment extends Fragment {
         View root = binding.getRoot();
 
         camera_open_id = (ImageButton) binding.cameraButton;
-        click_image_id = (ImageView) binding.mealImage;
 
         ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -76,44 +69,8 @@ public class NewEntryFragment extends Fragment {
                             Log.d("DUMMY", "DATA FROM INTENT" + data);
                             galleryAddPic();
                             File photoTest = getActivity().getExternalFilesDir(currentPhotoPath);
-
-                            // Get the dimensions of the View
-//                            int targetW = click_image_id.getMeasuredWidth() != 0 ? click_image_id.getMeasuredWidth() : 401;
-//                            int targetH = click_image_id.getMeasuredHeight() != 0 ? click_image_id.getMeasuredHeight() : 401;
-////                            int targetW = 400;
-////                            int targetH = 400;
-//
-//                            Log.d(" TAG3333", "" + targetH + targetW);
-//
-//                            // Get the dimensions of the bitmap
-//                            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-//                            bmOptions.inJustDecodeBounds = true;
-//
-//                            BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
-//
-//                            int photoW = bmOptions.outWidth;
-//                            int photoH = bmOptions.outHeight;
-//
-//                            // Determine how much to scale down the image
-//                            int scaleFactor = Math.max(1, Math.min(photoW/targetW, photoH/targetH));
-//
-//                            // Decode the image file into a Bitmap sized to fill the View
-//                            bmOptions.inJustDecodeBounds = false;
-//                            bmOptions.inSampleSize = scaleFactor;
-//                            bmOptions.inPurgeable = true;
-
-//                            Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
                             Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-                            click_image_id.setImageBitmap(bitmap);
-
-//
-//                                // BitMap is data structure of image file
-//                                // which stores the image in memory
-//                                Bitmap photo = (Bitmap) data.getExtras()
-//                                        .get("data");
-//
-//                                // Set the image in imageview for display
-//                                click_image_id.setImageBitmap(photo);
+                            camera_open_id.setImageBitmap(bitmap);
                         }
                     }
                 });
@@ -123,7 +80,6 @@ public class NewEntryFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         camera_open_id.setOnClickListener(new View.OnClickListener() {
 
@@ -152,34 +108,25 @@ public class NewEntryFragment extends Fragment {
             }
         });
 
-        // CAMERA Logic
-//        camera_open_id = (ImageButton)binding.cameraButton;
-//        click_image_id = (ImageView)binding.mealImage;
-//
-//        camera_open_id.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v)
-//            {
-//
-//                // Create the camera_intent ACTION_IMAGE_CAPTURE
-//                // it will open the camera for capture the image
-//                Intent camera_intent
-//                        = new Intent(MediaStore
-//                        .ACTION_IMAGE_CAPTURE);
-//
-//                // Start the activity with camera_intent,
-//                // and request pic id
-////                startActivityForResult(camera_intent, pic_id);
-//                someActivityResultLauncher.launch(camera_intent);
-//            }
-//        });
+        filterButtonDummy = (MaterialButton) binding.filterButtonDummy;
+        filterButtonDummy.setSelected(false);
+        filterButtonDummy.setOnClickListener(new View.OnClickListener() {
 
-//        final TextView textView = binding.textNewEntry;
-//        plusViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+            @Override
+            public void onClick(View v) {
+                toggleFilterButton();
+            }
+        });
+
         return root;
     }
 
+    public void toggleFilterButton () {
+        filterButtonDummy.setSelected(!filterButtonDummy.isSelected());
+        filterButtonDummy.setBackgroundTintList(getActivity().getResources().getColorStateList(R.color.color_state_list_filter_button_background));
+        filterButtonDummy.setRippleColor(getActivity().getResources().getColorStateList(R.color.color_state_list_filter_button_icon));
+        filterButtonDummy.setIconTint(getActivity().getResources().getColorStateList(R.color.color_state_list_filter_button_icon));
+    }
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -267,29 +214,6 @@ public class NewEntryFragment extends Fragment {
 
 
 
-//    public void openSomeActivityForResult() {
-//        Intent intent = new Intent(this, SomeActivity.class);
-//        someActivityResultLauncher.launch(intent);
-//    }
-
-    // This method will help to retrieve the image
-    public void onActivityResult(int requestCode,
-                                 int resultCode,
-                                 Intent data) {
-
-        // Match the request 'pic id with requestCode
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == pic_id) {
-
-            // BitMap is data structure of image file
-            // which stor the image in memory
-            Bitmap photo = (Bitmap) data.getExtras()
-                    .get("data");
-
-            // Set the image in imageview for display
-            click_image_id.setImageBitmap(photo);
-        }
-    }
 
     @Override
     public void onDestroyView() {

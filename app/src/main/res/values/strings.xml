@@ -5,4 +5,5 @@
     <string name="title_notifications">Notifications</string>
     <string name="my_image_description">My Image</string>
     <string name="secondary_text">Distance</string>
+    <string name="toggle_drawer">Toggle Drawer</string>
 </resources>

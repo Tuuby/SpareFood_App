@@ -2,10 +2,17 @@ package de.thb.sparefood_app.ui.home;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import androidx.annotation.GravityInt;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -30,6 +37,14 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        final Button toggleDrawerButton = binding.toggleDrawerButton;
+        toggleDrawerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.cardLayout.openDrawer(GravityCompat.END);
+            }
+        });
 
         ArrayList<Card> myCards = new ArrayList<>();
         myCards.add(new Card("Lorem", "3.4km"));
@@ -69,6 +84,7 @@ public class HomeFragment extends Fragment {
 
             }
         });
+
         cslManager.setStackFrom(StackFrom.Top);
         cards.setLayoutManager(cslManager);
         cards.setAdapter(new CardStackAdapter(myCards));

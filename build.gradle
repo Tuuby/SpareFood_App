@@ -1,8 +1,50 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+//    repositories {
+////        google()
+////        mavenCentral()
+//    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.3'
+        classpath "com.google.gms:google-services:4.3.10"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72"
+        classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.1'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.1'
+        classpath 'com.google.firebase:perf-plugin:1.4.0'
+    }
+}
 plugins {
     id 'com.android.application' version '7.2.0' apply false
     id 'com.android.library' version '7.2.0' apply false
 }
+
+ext {
+
+    firebasePerformanceVersion = "20.0.4"
+    firebaseCrashlyticsVersion = "18.2.6"
+    firebaseAnalyticsVersion = "20.0.2"
+}
+
+//allprojects {
+//    repositories {
+////        google()
+////        mavenCentral()
+//
+////        maven { url 'https://jitpack.io' }
+//        maven { url "https://chatsdk.jfrog.io/artifactory/release/chat-sdk-android" }
+//        maven { url "https://chatsdk.jfrog.io/artifactory/release/chatkit" }
+//        maven { url "https://chatsdk.jfrog.io/artifactory/release/matisse" }
+//        maven { url "https://chatsdk.jfrog.io/artifactory/release/material-search-view" }
+//        maven { url "https://chatsdk.jfrog.io/artifactory/release/android-image-cropper" }
+//    }
+//}
+
+subprojects {
+    tasks.withType(Javadoc).all { enabled = false }
+}
+
+
 
 task clean(type: Delete) {
     delete rootProject.buildDir

@@ -1,15 +1,24 @@
 package de.thb.sparefood_app.ui.notifications;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.annotation.NonNull;
+//import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import de.thb.sparefood_app.R;
 import de.thb.sparefood_app.databinding.FragmentNotificationsBinding;
 
 public class NotificationsFragment extends Fragment {
@@ -24,8 +33,19 @@ public class NotificationsFragment extends Fragment {
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        BottomNavigationView navView = getActivity().findViewById(R.id.nav_view);
+        BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottom_app_bar);
+        FloatingActionButton floatingActionButton = getActivity().findViewById(R.id.fab);
+        navView.setVisibility(View.GONE);
+        bottomAppBar.setVisibility(View.GONE);
+        floatingActionButton.setVisibility(View.GONE);
+        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        actionBar.hide();
+
+        Log.d("NotificationsFragment", "loaded");
+
+//        final TextView textView = binding.textNotifications;
+//        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
@@ -33,5 +53,13 @@ public class NotificationsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        BottomNavigationView navView = getActivity().findViewById(R.id.nav_view);
+        BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottom_app_bar);
+        FloatingActionButton floatingActionButton = getActivity().findViewById(R.id.fab);
+        navView.setVisibility(View.VISIBLE);
+        bottomAppBar.setVisibility(View.VISIBLE);
+        floatingActionButton.setVisibility(View.VISIBLE);
+        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        actionBar.show();
     }
 }

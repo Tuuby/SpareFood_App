@@ -56,14 +56,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createNewEntry(View view) {
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        BottomAppBar bottomAppBar = findViewById(R.id.bottom_app_bar);
-        FloatingActionButton floatingActionButton = findViewById(R.id.fab);
-        navView.setVisibility(View.GONE);
-        bottomAppBar.setVisibility(View.GONE);
-        floatingActionButton.setVisibility(View.GONE);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+//        BottomNavigationView navView = findViewById(R.id.nav_view);
+//        BottomAppBar bottomAppBar = findViewById(R.id.bottom_app_bar);
+//        FloatingActionButton floatingActionButton = findViewById(R.id.fab);
+//        navView.setVisibility(View.GONE);
+//        bottomAppBar.setVisibility(View.GONE);
+//        floatingActionButton.setVisibility(View.GONE);
+//        ActionBar actionBar = getSupportActionBar();
+//        actionBar.hide();
 
 //        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
@@ -75,14 +75,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void closeNewEntry(View view) {
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        BottomAppBar bottomAppBar = findViewById(R.id.bottom_app_bar);
-        FloatingActionButton floatingActionButton = findViewById(R.id.fab);
-        navView.setVisibility(View.VISIBLE);
-        bottomAppBar.setVisibility(View.VISIBLE);
-        floatingActionButton.setVisibility(View.VISIBLE);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.show();
+//        BottomNavigationView navView = findViewById(R.id.nav_view);
+//        BottomAppBar bottomAppBar = findViewById(R.id.bottom_app_bar);
+//        FloatingActionButton floatingActionButton = findViewById(R.id.fab);
+//        navView.setVisibility(View.VISIBLE);
+//        bottomAppBar.setVisibility(View.VISIBLE);
+//        floatingActionButton.setVisibility(View.VISIBLE);
+//        ActionBar actionBar = getSupportActionBar();
+//        actionBar.show();
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         navController.navigate(R.id.navigation_home);

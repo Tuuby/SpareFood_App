@@ -38,14 +38,6 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final Button toggleDrawerButton = binding.toggleDrawerButton;
-        toggleDrawerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                binding.cardLayout.openDrawer(GravityCompat.END);
-            }
-        });
-
         ArrayList<Card> myCards = new ArrayList<>();
         myCards.add(new Card("Lorem", "3.4km"));
         myCards.add(new Card("Ipsum", "7.8km"));

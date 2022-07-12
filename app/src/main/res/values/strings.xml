@@ -9,7 +9,7 @@
     <string name="secondary_text">Distance</string>
     <string name="toggle_drawer">Toggle Drawer</string>
     <string name="distance_german">Entfernung</string>
-    <string name="username">Username</string>
+    <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">LOGIN</string>
 </resources>

@@ -27,4 +27,9 @@
         android:name="de.thb.sparefood_app.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/navigation_new_entry"
+        android:name="de.thb.sparefood_app.ui.new_entry.NewEntryFragment"
+        android:label="@string/title_new_entry"
+        tools:layout="@layout/fragment_new_entry" />
 </navigation>

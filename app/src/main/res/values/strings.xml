@@ -2,7 +2,7 @@
     <string name="app_name">SpareFood_App</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_plus">Plus</string>
+    <string name="title_chat">Chat</string>
     <string name="title_new_entry">New Entry</string>
     <string name="title_notifications">Notifications</string>
 </resources>

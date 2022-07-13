@@ -18,7 +18,9 @@ import com.yuyakaido.android.cardstackview.StackFrom;
 
 import java.util.ArrayList;
 
+import de.thb.sparefood_app.MainActivity;
 import de.thb.sparefood_app.databinding.FragmentHomeBinding;
+import de.thb.sparefood_app.model.MealRepository;
 
 public class HomeFragment extends Fragment {
 
@@ -73,7 +75,9 @@ public class HomeFragment extends Fragment {
 
         cslManager.setStackFrom(StackFrom.Top);
         cards.setLayoutManager(cslManager);
-        cards.setAdapter(new CardStackAdapter(myCards));
+        CardStackAdapter adapter = new CardStackAdapter();
+        cards.setAdapter(adapter);
+        homeViewModel.meals.observe(MainActivity.getInstance(), adapter::setCardsList);
         return root;
     }
 

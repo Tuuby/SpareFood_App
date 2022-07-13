@@ -6,16 +6,26 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.thb.sparefood_app.databinding.CardLayoutBinding;
+import de.thb.sparefood_app.model.Meal;
 
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
 
-    private final List<Card> cardsList;
+    private final List<Card> cardsList = new ArrayList<>();
 
-    public CardStackAdapter(List<Card> cardsList) {
-        this.cardsList = cardsList;
+    public CardStackAdapter() {
+    }
+
+    public void setCardsList(List<Meal> meals) {
+        List<Card> cards = new ArrayList<>();
+        for (Meal meal: meals) {
+            cards.add(new Card(meal.getName(), meal.getDescription()));
+        }
+        cardsList.clear();
+        cardsList.addAll(cards);
     }
 
     @NonNull

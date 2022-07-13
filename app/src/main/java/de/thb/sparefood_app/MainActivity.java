@@ -28,17 +28,22 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import de.thb.sparefood_app.databinding.ActivityMainBinding;
+import de.thb.sparefood_app.model.MealRepository;
 import de.thb.sparefood_app.ui.home.HomeFragment;
 import de.thb.sparefood_app.ui.new_entry.NewEntryFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-
+    private MealRepository mealRepository;
+    private static MainActivity appInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        appInstance = this;
+        mealRepository = new MealRepository();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -53,6 +58,14 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
+    }
+
+    public static MainActivity getInstance() {
+        return appInstance;
+    }
+
+    public MealRepository getMealRepository() {
+        return mealRepository;
     }
 
     public void createNewEntry(View view) {

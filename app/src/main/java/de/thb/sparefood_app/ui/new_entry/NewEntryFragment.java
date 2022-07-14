@@ -19,7 +19,6 @@ import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.ImageProxy;
-import androidx.camera.core.impl.utils.executor.CameraXExecutors;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -29,15 +28,11 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
-
-import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.nio.ByteBuffer;
-import java.security.Permissions;
-import java.security.acl.Permission;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,8 +45,6 @@ import de.thb.sparefood_app.threading.ApplicationExecutors;
 public class NewEntryFragment extends Fragment {
 
     private FragmentNewEntryBinding binding;
-    private static final int pic_id = 123;
-    ImageButton camera_open_id;
     MaterialButton filterButtonDummy;
     private ImageCapture imageCapture;
     private ExecutorService cameraExecutor;
@@ -100,7 +93,7 @@ public class NewEntryFragment extends Fragment {
         floatingActionButton.setVisibility(View.GONE);
         appBarLayout.setVisibility(View.GONE);
 
-        camera_open_id = (ImageButton) binding.cameraButton;
+        ImageButton camera_open_id = (ImageButton) binding.cameraButton;
         camera_open_id.setOnClickListener(v -> {
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 imageCapture.takePicture(cameraExecutor, new ImageCapture.OnImageCapturedCallback() {

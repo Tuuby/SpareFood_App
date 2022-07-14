@@ -53,6 +53,23 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
+        BottomAppBar bottomAppBar = findViewById(R.id.bottom_app_bar);
+        FloatingActionButton floatingActionButton = findViewById(R.id.fab);
+        navView.setVisibility(View.GONE);
+        bottomAppBar.setVisibility(View.GONE);
+        floatingActionButton.setVisibility(View.GONE);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
+        if (true) {
+            navController.navigate(R.id.navigation_home);
+            Log.d("LoginFragment", "LOGIN");
+            navView.setVisibility(View.VISIBLE);
+            bottomAppBar.setVisibility(View.VISIBLE);
+            floatingActionButton.setVisibility(View.VISIBLE);
+            actionBar.show();
+        }
+
     }
 
     public void createNewEntry(View view) {

@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -13,9 +14,12 @@ import org.apache.http.client.utils.URIBuilder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +32,8 @@ public class MealRepository {
     // private static final Logger logger = Logger.getLogger(MealRepository.class.getName());
     private final MutableLiveData<List<Meal>> _meals = new MutableLiveData<>();
     private String authToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdC9zcGFyZWZvb2QiLCJ1cG4iOiJ0cm9tcGVsbEB0aC1icmFuZGVuYnVyZy5kZSIsImV4cCI6MTY1Nzg2NDYyMywiZ3JvdXBzIjpbIlVzZXIiXSwiYmlydGhkYXRlIjoiMTk5OS0wOC0xMiIsImlhdCI6MTY1NzgwNDYyMywianRpIjoiMDE1ODk0MWYtMDk5OC00NDBmLTk1ZmEtMGE4YmI4NzQ2ZmNhIn0.P7Fdg7YV9hePAmO1L8Z0vFrKv9avAq_541bE9B1O6zMDAeL-HUkFxej6mj8sXtoXDldq8keMlFO650lMPvxtF8nejOkgVwD-vuFJtL6QT7ns0KP5ZTwbr5yefRxraJ6E5cObUx0K2JzfLqkIlhqPoKNTo0TWFOneCrgH2eHe5sRnYNa3q0tM80YdiiA72sz-WxeckF4aAPVtAywRM0iSAHg_tGsKgHHLZ4UaxtcDDtI7Tgfjotdz7Ut7CmBXLMZUrbBDX060-5C-OB6nWKZPMejnrRM6KCENBIXH1oJZpbo3yC1h_dU20728QMQ6dZuIeUPLuyYYOf9XuICIxJTigQ";
-    private ObjectMapper mapper;
-    private ApplicationExecutors executors;
+    private final ObjectMapper mapper;
+    private final ApplicationExecutors executors;
 
     public LiveData<List<Meal>> meals = _meals;
 
@@ -150,6 +154,59 @@ public class MealRepository {
         executors.getBackground().execute(() -> {
             try {
                 int responseCode = likeConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    result.set(true);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        return result.get();
+    }
+
+    public boolean releaseMeal(int id) throws IOException {
+        AtomicBoolean result = new AtomicBoolean(false);
+
+        String request = getURL("/meals/" + id + "/release", null);
+        URL releaseURL = new URL(request);
+        HttpURLConnection releaseConnection = (HttpURLConnection) releaseURL.openConnection();
+        releaseConnection.setRequestMethod("POST");
+        releaseConnection.setRequestProperty("Authorization", "Bearer " + authToken);
+
+        executors.getBackground().execute(() -> {
+            try {
+                int responseCode = releaseConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    result.set(true);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        return result.get();
+    }
+
+    public boolean postMeal(Meal meal) throws IOException {
+        String data = mapper.writeValueAsString(meal);
+        AtomicBoolean result = new AtomicBoolean(false);
+
+        String request = getURL("/meals", null);
+        URL postURL = new URL(request);
+        HttpURLConnection postConnection = (HttpURLConnection) postURL.openConnection();
+        postConnection.setRequestMethod("POST");
+        postConnection.setRequestProperty("Content-Type", "application/json");
+        postConnection.setRequestProperty("Accept", "application/json");
+        postConnection.setDoOutput(true);
+
+        executors.getBackground().execute(() -> {
+            try (OutputStream os = postConnection.getOutputStream()) {
+                byte[] input = data.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                int responseCode = postConnection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     result.set(true);
                 }

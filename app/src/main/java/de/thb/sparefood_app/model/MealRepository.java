@@ -9,24 +9,18 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.thb.sparefood_app.threading.ApplicationExecutors;
-import de.thb.sparefood_app.ui.home.Card;
-import kotlin.coroutines.Continuation;
 
 
 public class MealRepository {
@@ -116,5 +110,32 @@ public class MealRepository {
             mealsConnection.disconnect();
         });
 
+    }
+
+    public boolean login(Map<String, String> params) throws IOException {
+        AtomicBoolean result = new AtomicBoolean(false);
+
+        String request = getURL("/auth/generate-token", params);
+
+        URL loginURL = new URL(request);
+        HttpURLConnection loginConnection = (HttpURLConnection) loginURL.openConnection();
+        loginConnection.setRequestMethod("POST");
+
+        executors.getBackground().execute(() -> {
+            int responseCode = 0;
+            try {
+                responseCode = loginConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(loginConnection.getInputStream()));
+                    authToken = reader.readLine();
+                    result.set(true);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            loginConnection.disconnect();
+        });
+        return result.get();
     }
 }

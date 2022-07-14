@@ -10,5 +10,10 @@
     <string name="toggle_drawer">Toggle Drawer</string>
     <string name="distance_german">Entfernung</string>
     <string name="primarytext">Dish name</string>
+    <string name="meal_name_hint">Name des Gerichtes</string>
+    <string name="meal_description_hint">Beschreibung</string>
     <string name="refresh_error">Refreshing Failed!</string>
+    <string name="settings_menu_profil_title">Profil</string>
+    <string name="settings_menu_einstellungen_title">Einstellungen</string>
+    <string name="settings_menu_rechtliches_title">Rechtliches</string>
 </resources>

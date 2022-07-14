@@ -28,7 +28,11 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +47,6 @@ public class NewEntryFragment extends Fragment {
 
     private FragmentNewEntryBinding binding;
     private static final int pic_id = 123;
-    // Define the button and imageview type variable
     ImageButton camera_open_id;
     MaterialButton filterButtonDummy;
     String currentPhotoPath;
@@ -57,6 +60,15 @@ public class NewEntryFragment extends Fragment {
         binding = FragmentNewEntryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        BottomNavigationView navView = getActivity().findViewById(R.id.nav_view);
+        BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottom_app_bar);
+        FloatingActionButton floatingActionButton = getActivity().findViewById(R.id.fab);
+        AppBarLayout appBarLayout = getActivity().findViewById(R.id.appBarLayout);
+        navView.setVisibility(View.GONE);
+        bottomAppBar.setVisibility(View.GONE);
+        floatingActionButton.setVisibility(View.GONE);
+        appBarLayout.setVisibility(View.GONE);
+
         camera_open_id = (ImageButton) binding.cameraButton;
 
         ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
@@ -66,7 +78,6 @@ public class NewEntryFragment extends Fragment {
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Intent data = result.getData();
-                            Log.d("DUMMY", "DATA FROM INTENT" + data);
                             galleryAddPic();
                             File photoTest = getActivity().getExternalFilesDir(currentPhotoPath);
                             Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
@@ -74,12 +85,6 @@ public class NewEntryFragment extends Fragment {
                         }
                     }
                 });
-
-        try {
-            Log.d("FileTest TAG", "" + createImageFile());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         camera_open_id.setOnClickListener(new View.OnClickListener() {
 
@@ -100,7 +105,6 @@ public class NewEntryFragment extends Fragment {
                         Uri photoURI = FileProvider.getUriForFile(getActivity(),
                                 "com.example.android.fileprovider",
                                 photoFile);
-                        Log.d("dummytag", "" + photoURI + " STRUINGslefjwei" + MediaStore.EXTRA_OUTPUT);
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                         someActivityResultLauncher.launch(takePictureIntent);
                     }
@@ -129,7 +133,6 @@ public class NewEntryFragment extends Fragment {
     }
 
     private File createImageFile() throws IOException {
-        // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -139,7 +142,6 @@ public class NewEntryFragment extends Fragment {
                 storageDir      /* directory */
         );
 
-        // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
@@ -187,37 +189,18 @@ public class NewEntryFragment extends Fragment {
         }
     }
 
-
-
-
-//    private void dispatchTakePictureIntent() {
-//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        // Ensure that there's a camera activity to handle the intent
-//        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-//            // Create the File where the photo should go
-//            File photoFile = null;
-//            try {
-//                photoFile = createImageFile();
-//            } catch (IOException ex) {
-//                // Error occurred while creating the File
-//            }
-//            // Continue only if the File was successfully created
-//            if (photoFile != null) {
-//                Uri photoURI = FileProvider.getUriForFile(this,
-//                        "com.example.android.fileprovider",
-//                        photoFile);
-//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-//                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-//            }
-//        }
-//    }
-
-
-
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+
+        BottomNavigationView navView = getActivity().findViewById(R.id.nav_view);
+        BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottom_app_bar);
+        FloatingActionButton floatingActionButton = getActivity().findViewById(R.id.fab);
+        AppBarLayout appBarLayout = getActivity().findViewById(R.id.appBarLayout);
+        navView.setVisibility(View.VISIBLE);
+        bottomAppBar.setVisibility(View.VISIBLE);
+        floatingActionButton.setVisibility(View.VISIBLE);
+        appBarLayout.setVisibility(View.VISIBLE);
     }
 }

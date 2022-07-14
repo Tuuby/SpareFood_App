@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/settings_menu_profil"
+        android:title="@string/settings_menu_profil_title"
+        />
+
+    <item
+        android:id="@+id/settings_menu_einstellungen"
+        android:title="@string/settings_menu_einstellungen_title"
+        />
+    <item
+        android:id="@+id/settings_menu_rechtliches"
+        android:title="@string/settings_menu_rechtliches_title"
+        />
+</menu>

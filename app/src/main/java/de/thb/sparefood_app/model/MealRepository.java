@@ -1,5 +1,6 @@
 package de.thb.sparefood_app.model;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.utils.URIBuilder;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -160,6 +162,8 @@ public class MealRepository {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            likeConnection.disconnect();
         });
         return result.get();
     }
@@ -182,6 +186,8 @@ public class MealRepository {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            releaseConnection.disconnect();
         });
         return result.get();
     }
@@ -213,7 +219,47 @@ public class MealRepository {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            postConnection.disconnect();
         });
+        return result.get();
+    }
+
+    public boolean postImage(int id, Bitmap bitmap) throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        bitmap.recycle();
+
+        AtomicBoolean result = new AtomicBoolean(false);
+
+        String request = getURL("/meals/" + id + "/image", null);
+        URL uploadURL = new URL(request);
+        HttpURLConnection uploadConnection = (HttpURLConnection) uploadURL.openConnection();
+        uploadConnection.setRequestMethod("POST");
+        uploadConnection.setDoOutput(true);
+        uploadConnection.setDoInput(true);
+        uploadConnection.setRequestProperty("Content-Type", "multipart/form-data");
+
+        executors.getBackground().execute(() -> {
+            try {
+                OutputStream os = uploadConnection.getOutputStream();
+                os.write(byteArray);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                int responseCode = uploadConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    result.set(true);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            uploadConnection.disconnect();
+        });
+
         return result.get();
     }
 }

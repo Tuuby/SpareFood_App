@@ -35,6 +35,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -260,8 +261,11 @@ public class NewEntryFragment extends Fragment {
         submitEntryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
-                newEntryViewModel.submitNewEntry();
+                try {
+                    newEntryViewModel.submitNewEntry();
+                } catch (IOException e) {
+                    Snackbar.make(root, "Sending failed. Try again.", Snackbar.LENGTH_LONG).show();
+                }
             }
         });
 

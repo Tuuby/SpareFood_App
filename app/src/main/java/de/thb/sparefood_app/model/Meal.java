@@ -60,8 +60,11 @@ public class Meal {
         return properties;
     }
 
-    public void setProperties
-            (List<PROPERTIES> filter) {
+    public void setProperties(List<PROPERTIES> filter) {
         this.properties = filter;
+    }
+
+    public void addProperty(PROPERTIES property) {
+        this.properties.add(property);
     }
 }

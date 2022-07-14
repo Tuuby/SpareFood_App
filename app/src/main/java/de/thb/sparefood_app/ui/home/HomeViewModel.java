@@ -49,9 +49,9 @@ public class HomeViewModel extends ViewModel {
     }
 
     private String getPropertyName(int index) {
-        for(PROPERTIES propertiy: PROPERTIES.values()) {
-            if (propertiy.id == index)
-                return propertiy.name;
+        for(PROPERTIES property: PROPERTIES.values()) {
+            if (property.id == index)
+                return property.name;
         }
         return null;
     }

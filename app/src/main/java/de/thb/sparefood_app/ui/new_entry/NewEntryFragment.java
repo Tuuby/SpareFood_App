@@ -6,21 +6,27 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Picture;
+import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -28,16 +34,14 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.bottomappbar.BottomAppBar;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.xml.transform.Result;
 
 import de.thb.sparefood_app.R;
 import de.thb.sparefood_app.databinding.FragmentNewEntryBinding;
@@ -46,79 +50,133 @@ import de.thb.sparefood_app.databinding.FragmentNewEntryBinding;
 public class NewEntryFragment extends Fragment {
 
     private FragmentNewEntryBinding binding;
-    private static final int pic_id = 123;
-    ImageButton camera_open_id;
-    MaterialButton filterButtonDummy;
-    String currentPhotoPath;
+    ImageButton cameraButton;
+    EditText mealName;
+    EditText mealDescription;
+    MaterialButton submitEntryBtn;
 
+    public static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+    ActivityResultLauncher<String> requestPermissionLauncher;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NewEntryViewModel plusViewModel =
+        NewEntryViewModel newEntryViewModel =
                 new ViewModelProvider(this).get(NewEntryViewModel.class);
 
         binding = FragmentNewEntryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        BottomNavigationView navView = getActivity().findViewById(R.id.nav_view);
-        BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottom_app_bar);
-        FloatingActionButton floatingActionButton = getActivity().findViewById(R.id.fab);
-        AppBarLayout appBarLayout = getActivity().findViewById(R.id.appBarLayout);
-        navView.setVisibility(View.GONE);
-        bottomAppBar.setVisibility(View.GONE);
-        floatingActionButton.setVisibility(View.GONE);
-        appBarLayout.setVisibility(View.GONE);
+        cameraButton = (ImageButton) binding.cameraButton;
+        mealName = (EditText) binding.mealName;
+        mealDescription = (EditText) binding.mealDescription;
+        submitEntryBtn = (MaterialButton) binding.submitEntryBtn;
 
-        camera_open_id = (ImageButton) binding.cameraButton;
+        if (newEntryViewModel.getMealImage() != null) {cameraButton.setImageBitmap(newEntryViewModel.getMealImage());}
+        if (newEntryViewModel.getMealName() != null) {mealName.setText(newEntryViewModel.getMealName());}
+        if (newEntryViewModel.getMealDescription() != null) {mealDescription.setText(newEntryViewModel.getMealDescription());}
 
-        ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
+
+//        ActivityResultLauncher<Intent> cameraActivityResultLauncher = registerForActivityResult(
+//                new ActivityResultContracts.StartActivityForResult(),
+////                new ActivityResultContracts.StartActivityForResult(),
+//                new ActivityResultCallback<ActivityResult>() {
+//                    @Override
+//                    public void onActivityResult(ActivityResult result) {
+//                        if (result.getResultCode() == Activity.RESULT_OK) {
+//                            newEntryViewModel.generatePhoto();
+//                            cameraButton.setImageBitmap(newEntryViewModel.getMealImage());
+//                            galleryAddPic(newEntryViewModel.getMealImage());
+//                        }
+//                    }
+//                });
+
+//        ActivityResultLauncher<Uri> cameraActivityResultLauncher = registerForActivityResult(
+//                new ActivityResultContracts.TakePicture(),
+//                new ActivityResultCallback<Boolean>() {
+//                    @Override
+//                    public void onActivityResult(Boolean result) {
+//                        // do what you need with the uri here ...
+//                        newEntryViewModel.generatePhoto();
+//                        cameraButton.setImageBitmap(newEntryViewModel.getMealImage());
+//                        galleryAddPic(newEntryViewModel.getMealImage());
+//                    }
+//        });
+
+        ActivityResultLauncher<Uri> cameraActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.TakePicture(),
+                new ActivityResultCallback<Boolean>() {
                     @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            Intent data = result.getData();
-                            galleryAddPic();
-                            File photoTest = getActivity().getExternalFilesDir(currentPhotoPath);
-                            Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-                            camera_open_id.setImageBitmap(bitmap);
+                    public void onActivityResult(Boolean result) {
+                        // do what you need with the uri here ...
+                        newEntryViewModel.generatePhoto();
+                        cameraButton.setImageBitmap(newEntryViewModel.getMealImage());
+                        galleryAddPic(newEntryViewModel.getMealImage());
+                    }
+        });
+
+        requestPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                new ActivityResultCallback<Boolean>() {
+                    @Override
+                    public void onActivityResult(Boolean result) {
+                        if (result) {
+                            // PERMISSION GRANTED
+//                            newEntryViewModel.generateTakePictureIntent();
+//                            cameraActivityResultLauncher.launch(newEntryViewModel.getTakePictureIntent());
+                            cameraActivityResultLauncher.launch(newEntryViewModel.getNewPhotoUri());
+                        } else {
+                            // PERMISSION NOT GRANTED
+                            Log.d("PERMISSION", "NOT GRANTED");
                         }
                     }
-                });
+                }
+        );
 
-        camera_open_id.setOnClickListener(new View.OnClickListener() {
+
+        cameraButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                // Ensure that there's a camera activity to handle the intent
-                if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    // Create the File where the photo should go
-                    File photoFile = null;
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException ex) {
-                        // Error occurred while creating the File
-                    }
-                    // Continue only if the File was successfully created
-                    if (photoFile != null) {
-                        Uri photoURI = FileProvider.getUriForFile(getActivity(),
-                                "com.example.android.fileprovider",
-                                photoFile);
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                        someActivityResultLauncher.launch(takePictureIntent);
-                    }
-                }
+
+//                    newEntryViewModel.generateTakePictureIntent();
+//                    cameraActivityResultLauncher.launch(newEntryViewModel.getTakePictureIntent());
+//                requestPermissionLauncher.launch(MediaStore.ACTION_IMAGE_CAPTURE);
+                cameraActivityResultLauncher.launch(newEntryViewModel.getNewPhotoUri());
+
             }
         });
 
-        filterButtonDummy = (MaterialButton) binding.filterButtonDummy;
-        filterButtonDummy.setSelected(false);
-        filterButtonDummy.setOnClickListener(new View.OnClickListener() {
+        mealName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                newEntryViewModel.setMealName(mealName.getText().toString());
+            }
+        });
+
+        mealName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                newEntryViewModel.setMealDescription(mealDescription.getText().toString());
+            }
+        });
+
+        submitEntryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                toggleFilterButton();
+                //TODO
+                newEntryViewModel.submitNewEntry();
             }
         });
 
@@ -133,6 +191,7 @@ public class NewEntryFragment extends Fragment {
     }
 
     private File createImageFile() throws IOException {
+        // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -142,25 +201,12 @@ public class NewEntryFragment extends Fragment {
                 storageDir      /* directory */
         );
 
+        // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
 
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//        File f = new File(currentPhotoPath);
-        File f = new File(currentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        String[] scanFileArray = {currentPhotoPath};
-        MediaScannerConnection.scanFile(getActivity(), scanFileArray,
-                null, null);
-        mediaScanIntent.setData(contentUri);
-        Log.d("contentUri", currentPhotoPath + " COMP " + contentUri);
-        getActivity().sendBroadcast(mediaScanIntent);
-
-        File photoTest = getActivity().getExternalFilesDir(currentPhotoPath);
-        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-
+    protected void galleryAddPic(Bitmap bitmap) {
         //Check for External Storage Permission
         if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -185,9 +231,37 @@ public class NewEntryFragment extends Fragment {
             }
         } else {
             // Permission has already been granted
-                MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "dummyTitle", "dummyDesc");
+            MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "dummyTitle", "dummyDesc");
         }
     }
+
+
+
+
+//    private void dispatchTakePictureIntent() {
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        // Ensure that there's a camera activity to handle the intent
+//        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+//            // Create the File where the photo should go
+//            File photoFile = null;
+//            try {
+//                photoFile = createImageFile();
+//            } catch (IOException ex) {
+//                // Error occurred while creating the File
+//            }
+//            // Continue only if the File was successfully created
+//            if (photoFile != null) {
+//                Uri photoURI = FileProvider.getUriForFile(this,
+//                        "com.example.android.fileprovider",
+//                        photoFile);
+//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+//            }
+//        }
+//    }
+
+
+
 
     @Override
     public void onDestroyView() {

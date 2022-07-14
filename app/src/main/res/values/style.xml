@@ -4,6 +4,10 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+    <style name="ShapeAppearanceOverlay.MyApp.Button.Rounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20%</item>
+    </style>
     <style name="chatSelectionItemBackground" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
@@ -12,6 +16,5 @@
         <item name="color">@color/black</item>
         <item name="backgroundColor">@color/purple_200</item>
     </style>
-<!--    <style name="AppTheme" parent="ChatSDKTheme">-->
 
 </resources>

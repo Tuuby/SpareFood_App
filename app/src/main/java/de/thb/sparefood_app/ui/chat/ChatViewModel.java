@@ -1,16 +1,16 @@
-package de.thb.sparefood_app.ui.plus;
+package de.thb.sparefood_app.ui.chat;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class PlusViewModel extends ViewModel {
+public class ChatViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public PlusViewModel() {
+    public ChatViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is Plus fragment");
+        mText.setValue("This is Chat fragment");
     }
 
     public LiveData<String> getText() {

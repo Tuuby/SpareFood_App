@@ -25,10 +25,15 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.nio.ByteBuffer;
 import java.security.Permissions;
@@ -46,7 +51,6 @@ public class NewEntryFragment extends Fragment {
 
     private FragmentNewEntryBinding binding;
     private static final int pic_id = 123;
-    // Define the button and imageview type variable
     ImageButton camera_open_id;
     MaterialButton filterButtonDummy;
     private ImageCapture imageCapture;
@@ -69,6 +73,7 @@ public class NewEntryFragment extends Fragment {
         binding = FragmentNewEntryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+
         executors = new ApplicationExecutors();
 
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this.requireContext());
@@ -86,6 +91,15 @@ public class NewEntryFragment extends Fragment {
             }
         }, ContextCompat.getMainExecutor(this.requireContext()));
 
+        BottomNavigationView navView = getActivity().findViewById(R.id.nav_view);
+        BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottom_app_bar);
+        FloatingActionButton floatingActionButton = getActivity().findViewById(R.id.fab);
+        AppBarLayout appBarLayout = getActivity().findViewById(R.id.appBarLayout);
+        navView.setVisibility(View.GONE);
+        bottomAppBar.setVisibility(View.GONE);
+        floatingActionButton.setVisibility(View.GONE);
+        appBarLayout.setVisibility(View.GONE);
+
         camera_open_id = (ImageButton) binding.cameraButton;
         camera_open_id.setOnClickListener(v -> {
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
@@ -98,7 +112,6 @@ public class NewEntryFragment extends Fragment {
                             camera_open_id.setImageBitmap(capturedImage);
                         });
                     }
-
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
                         Snackbar.make(root, "Image capture failed.", Snackbar.LENGTH_LONG).show();
@@ -147,5 +160,14 @@ public class NewEntryFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+
+        BottomNavigationView navView = getActivity().findViewById(R.id.nav_view);
+        BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottom_app_bar);
+        FloatingActionButton floatingActionButton = getActivity().findViewById(R.id.fab);
+        AppBarLayout appBarLayout = getActivity().findViewById(R.id.appBarLayout);
+        navView.setVisibility(View.VISIBLE);
+        bottomAppBar.setVisibility(View.VISIBLE);
+        floatingActionButton.setVisibility(View.VISIBLE);
+        appBarLayout.setVisibility(View.VISIBLE);
     }
 }

@@ -18,10 +18,10 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/navigation_plus"
-        android:name="de.thb.sparefood_app.ui.plus.PlusFragment"
-        android:label="@string/title_plus"
-        tools:layout="@layout/fragment_plus" />
+        android:id="@+id/navigation_chat"
+        android:name="de.thb.sparefood_app.ui.chat.ChatFragment"
+        android:label="@string/title_chat"
+        tools:layout="@layout/fragment_chat" />
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="de.thb.sparefood_app.ui.notifications.NotificationsFragment"

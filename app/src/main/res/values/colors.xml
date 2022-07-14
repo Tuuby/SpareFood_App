@@ -13,4 +13,7 @@
     <color name="active_green">#79ED83</color>
     <color name="transparentTest">#7F000000</color>
     <color name="error_red">#920000</color>
+    <color name="transparent_bg">#00000000</color>
+    <color name="dark_grey">#808080</color>
+    <color name="gainsboro">#dcdcdc</color>
 </resources>

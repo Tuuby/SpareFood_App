@@ -75,9 +75,9 @@ public class MealRepository {
                 sb.append(line);
             }
 
-            List<Meal> mealLIst = mapper.readValue(sb.toString(), new TypeReference<List<Meal>>() {});
-            if (mealLIst != null) {
-                _meals.postValue(mealLIst);
+            List<Meal> mealList = mapper.readValue(sb.toString(), new TypeReference<List<Meal>>() {});
+            if (mealList != null) {
+                _meals.postValue(mealList);
             }
 
         } else {

@@ -34,7 +34,11 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,8 +47,10 @@ import java.util.Date;
 
 import javax.xml.transform.Result;
 
+import de.thb.sparefood_app.MainActivity;
 import de.thb.sparefood_app.R;
 import de.thb.sparefood_app.databinding.FragmentNewEntryBinding;
+import de.thb.sparefood_app.model.PROPERTIES;
 
 
 public class NewEntryFragment extends Fragment {
@@ -75,32 +81,114 @@ public class NewEntryFragment extends Fragment {
         if (newEntryViewModel.getMealName() != null) {mealName.setText(newEntryViewModel.getMealName());}
         if (newEntryViewModel.getMealDescription() != null) {mealDescription.setText(newEntryViewModel.getMealDescription());}
 
+        MaterialButton fishButton = binding.fishButton;
+        fishButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.NO_FISH, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.fisch_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.fisch_neutral));
+            }
+        });
 
-//        ActivityResultLauncher<Intent> cameraActivityResultLauncher = registerForActivityResult(
-//                new ActivityResultContracts.StartActivityForResult(),
-////                new ActivityResultContracts.StartActivityForResult(),
-//                new ActivityResultCallback<ActivityResult>() {
-//                    @Override
-//                    public void onActivityResult(ActivityResult result) {
-//                        if (result.getResultCode() == Activity.RESULT_OK) {
-//                            newEntryViewModel.generatePhoto();
-//                            cameraButton.setImageBitmap(newEntryViewModel.getMealImage());
-//                            galleryAddPic(newEntryViewModel.getMealImage());
-//                        }
-//                    }
-//                });
+        MaterialButton lactoseButton = binding.lactoseButton;
+        lactoseButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.NO_LACTOSE, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.laktose_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.laktose_neutral));
+            }
+        });
 
-//        ActivityResultLauncher<Uri> cameraActivityResultLauncher = registerForActivityResult(
-//                new ActivityResultContracts.TakePicture(),
-//                new ActivityResultCallback<Boolean>() {
-//                    @Override
-//                    public void onActivityResult(Boolean result) {
-//                        // do what you need with the uri here ...
-//                        newEntryViewModel.generatePhoto();
-//                        cameraButton.setImageBitmap(newEntryViewModel.getMealImage());
-//                        galleryAddPic(newEntryViewModel.getMealImage());
-//                    }
-//        });
+        MaterialButton proteinButton = binding.proteinButton;
+        proteinButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.PROTEIN, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.proteinreich_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.proteinreich_neutral));
+            }
+        });
+
+        MaterialButton nutsButton = binding.nutsButton;
+        nutsButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.NO_NUTS, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.schalenfruechte_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.schalenfruechte_neutral));
+            }
+        });
+
+        MaterialButton hotButton = binding.hotButton;
+        hotButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.NOT_HOT, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.scharf_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.scharf_neutral));
+            }
+        });
+
+        MaterialButton porkButton = binding.porkButton;
+        porkButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.NO_PORK, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.schwein_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.schwein_neutral));
+            }
+        });
+
+        MaterialButton soyButton = binding.soyButton;
+        soyButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.SOY, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.soja_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.soja_neutral));
+            }
+        });
+
+        MaterialButton veganButton = binding.veganButton;
+        veganButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.VEGAN, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.vegan_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.vegan_neutral));
+            }
+        });
+
+        MaterialButton vegetarianButton = binding.vegetarianButton;
+        vegetarianButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.VEGETARIAN, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.vegetarisch_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.vegetarisch_neutral));
+            }
+        });
+
+        MaterialButton wheatButton = binding.wheatButton;
+        wheatButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.NO_WHEAT, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.weizen_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.weizen_neutral));
+            }
+        });
+
+        BottomNavigationView navView = getActivity().findViewById(R.id.nav_view);
+        BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottom_app_bar);
+        FloatingActionButton floatingActionButton = getActivity().findViewById(R.id.fab);
+        AppBarLayout appBarLayout = getActivity().findViewById(R.id.appBarLayout);
+        navView.setVisibility(View.GONE);
+        bottomAppBar.setVisibility(View.GONE);
+        floatingActionButton.setVisibility(View.GONE);
+        appBarLayout.setVisibility(View.GONE);
 
         ActivityResultLauncher<Uri> cameraActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.TakePicture(),
@@ -121,8 +209,6 @@ public class NewEntryFragment extends Fragment {
                     public void onActivityResult(Boolean result) {
                         if (result) {
                             // PERMISSION GRANTED
-//                            newEntryViewModel.generateTakePictureIntent();
-//                            cameraActivityResultLauncher.launch(newEntryViewModel.getTakePictureIntent());
                             cameraActivityResultLauncher.launch(newEntryViewModel.getNewPhotoUri());
                         } else {
                             // PERMISSION NOT GRANTED
@@ -138,9 +224,6 @@ public class NewEntryFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-//                    newEntryViewModel.generateTakePictureIntent();
-//                    cameraActivityResultLauncher.launch(newEntryViewModel.getTakePictureIntent());
-//                requestPermissionLauncher.launch(MediaStore.ACTION_IMAGE_CAPTURE);
                 cameraActivityResultLauncher.launch(newEntryViewModel.getNewPhotoUri());
 
             }
@@ -183,29 +266,6 @@ public class NewEntryFragment extends Fragment {
         return root;
     }
 
-    public void toggleFilterButton () {
-        filterButtonDummy.setSelected(!filterButtonDummy.isSelected());
-        filterButtonDummy.setBackgroundTintList(getActivity().getResources().getColorStateList(R.color.color_state_list_filter_button_background));
-        filterButtonDummy.setRippleColor(getActivity().getResources().getColorStateList(R.color.color_state_list_filter_button_icon));
-        filterButtonDummy.setIconTint(getActivity().getResources().getColorStateList(R.color.color_state_list_filter_button_icon));
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
     protected void galleryAddPic(Bitmap bitmap) {
         //Check for External Storage Permission
         if (ContextCompat.checkSelfPermission(getActivity(),
@@ -234,31 +294,6 @@ public class NewEntryFragment extends Fragment {
             MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "dummyTitle", "dummyDesc");
         }
     }
-
-
-
-
-//    private void dispatchTakePictureIntent() {
-//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        // Ensure that there's a camera activity to handle the intent
-//        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-//            // Create the File where the photo should go
-//            File photoFile = null;
-//            try {
-//                photoFile = createImageFile();
-//            } catch (IOException ex) {
-//                // Error occurred while creating the File
-//            }
-//            // Continue only if the File was successfully created
-//            if (photoFile != null) {
-//                Uri photoURI = FileProvider.getUriForFile(this,
-//                        "com.example.android.fileprovider",
-//                        photoFile);
-//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-//                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-//            }
-//        }
-//    }
 
 
 

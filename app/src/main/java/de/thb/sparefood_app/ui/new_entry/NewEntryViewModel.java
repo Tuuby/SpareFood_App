@@ -33,9 +33,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import de.thb.sparefood_app.model.PROPERTIES;
+
 public class NewEntryViewModel extends AndroidViewModel {
 
-    private final MutableLiveData<String> mText;
+    private boolean[] filter;
 
     public Bitmap getMealImage() {
         return mealImage;
@@ -65,6 +67,11 @@ public class NewEntryViewModel extends AndroidViewModel {
 
     public void setCurrentPhotoPath(String currentPhotoPath) {this.currentPhotoPath = currentPhotoPath;}
 
+    public void setFilter(PROPERTIES property, boolean value) {
+        filter[property.id] = value;
+    }
+
+
     private Bitmap mealImage;
     private String mealName;
     private String mealDescription;
@@ -79,9 +86,7 @@ public class NewEntryViewModel extends AndroidViewModel {
 
     public NewEntryViewModel(@NonNull Application application) {
         super(application);
-        mText = new MutableLiveData<>();
-        mText.setValue("##### This is NewEntry fragment #####");
-
+        filter = new boolean[10];
 
     }
 

@@ -5,13 +5,13 @@
     android:id="@+id/filter_drawer_layout"
     android:layout_width="300dp"
     android:layout_height="match_parent"
-    android:background="@color/purple_200"
+    android:background="@drawable/layout_filter_view"
     android:layout_gravity="end"
     android:padding="16dp"
     android:clipChildren="false"
     android:clipToPadding="false"
     android:layout_marginTop="100dp"
-    android:layout_marginBottom="100dp">
+    android:layout_marginBottom="150dp">
 
     <TextView
         android:id="@+id/TestText"
@@ -32,6 +32,11 @@
         android:valueFrom="0"
         android:valueTo="40"
         android:value="20"
+        app:thumbColor="#35C8AF"
+        app:tickColor="#B8D1D1"
+        app:trackColorActive="#35C8AF"
+        app:trackColorInactive="#C8E1E1"
+        app:haloColor="#C8E1E1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TestText"
@@ -42,7 +47,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="15dp"
         android:checkable="true"
         android:insetLeft="0dp"
         android:insetTop="0dp"
@@ -53,7 +58,7 @@
         app:iconPadding="0dp"
         app:iconTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/slider"
         app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
@@ -63,7 +68,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="15dp"
         android:checkable="true"
         android:insetLeft="0dp"
         android:insetTop="0dp"
@@ -74,9 +79,9 @@
         app:iconPadding="0dp"
         app:iconTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.256"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/proteinButton"
+        app:layout_constraintTop_toBottomOf="@+id/slider"
         app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
 
     <com.google.android.material.button.MaterialButton
@@ -84,7 +89,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="240dp"
         android:checkable="true"
         android:insetLeft="0dp"
         android:insetTop="0dp"
@@ -95,6 +100,7 @@
         app:iconPadding="0dp"
         app:iconTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/slider"
         app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
@@ -104,8 +110,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="17dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="90dp"
         android:checkable="true"
         android:insetLeft="0dp"
         android:insetTop="0dp"
@@ -116,7 +121,7 @@
         app:iconPadding="0dp"
         app:iconTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.974"
+        app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/slider"
         app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
@@ -126,8 +131,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="17dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="165dp"
         android:checkable="true"
         android:insetLeft="0dp"
         android:insetTop="0dp"
@@ -138,9 +142,9 @@
         app:iconPadding="0dp"
         app:iconTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.721"
+        app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/proteinButton"
+        app:layout_constraintTop_toBottomOf="@+id/slider"
         app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
 
     <com.google.android.material.button.MaterialButton
@@ -148,7 +152,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="90dp"
         android:checkable="true"
         android:insetLeft="0dp"
         android:insetTop="0dp"
@@ -159,9 +163,9 @@
         app:iconPadding="0dp"
         app:iconTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.264"
+        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vegetarianButton"
+        app:layout_constraintTop_toBottomOf="@+id/slider"
         app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
 
     <com.google.android.material.button.MaterialButton
@@ -169,7 +173,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="88dp"
         android:checkable="true"
         android:insetLeft="0dp"
         android:insetTop="0dp"
@@ -180,9 +184,9 @@
         app:iconPadding="0dp"
         app:iconTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.74"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vegetarianButton"
+        app:layout_constraintTop_toBottomOf="@+id/slider"
         app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
 
     <com.google.android.material.button.MaterialButton
@@ -190,7 +194,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="165dp"
         android:checkable="true"
         android:insetLeft="0dp"
         android:insetTop="0dp"
@@ -201,9 +205,9 @@
         app:iconPadding="0dp"
         app:iconTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lactoseButton"
+        app:layout_constraintTop_toBottomOf="@+id/slider"
         app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
 
     <com.google.android.material.button.MaterialButton
@@ -211,7 +215,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="165dp"
         android:checkable="true"
         android:insetLeft="0dp"
         android:insetTop="0dp"
@@ -222,9 +226,9 @@
         app:iconPadding="0dp"
         app:iconTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hotButton"
+        app:layout_constraintTop_toBottomOf="@+id/slider"
         app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
 
     <com.google.android.material.button.MaterialButton
@@ -232,7 +236,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="15dp"
         android:checkable="true"
         android:insetLeft="0dp"
         android:insetTop="0dp"
@@ -243,8 +247,8 @@
         app:iconPadding="0dp"
         app:iconTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.932"
-        app:layout_constraintStart_toEndOf="@+id/vegetarianButton"
-        app:layout_constraintTop_toBottomOf="@+id/hotButton"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/slider"
         app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
 </androidx.constraintlayout.widget.ConstraintLayout>

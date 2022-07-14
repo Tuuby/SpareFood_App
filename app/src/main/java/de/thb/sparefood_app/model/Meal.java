@@ -1,27 +1,27 @@
 package de.thb.sparefood_app.model;
 
+import java.util.List;
+
 public class Meal {
     private String name;
     private String description;
-    private int _id;
-    private int longitude;
-    private int latitude;
-    private PROPERTIES filter;
+    private int id;
+    private Location location;
+    private List<PROPERTIES> properties;
 
     public Meal() {
-        this("", "", -1, 0, 0);
+        this("", "", -1, null);
     }
 
     public Meal(String name, String description) {
-        this(name, description, -1, 0, 0);
+        this(name, description, -1, null);
     }
 
-    public Meal(String name, String description, int _id, int longitude, int latitude) {
+    public Meal(String name, String description, int _id, Location location) {
         this.name = name;
         this.description = description;
-        this._id = _id;
-        this.longitude = longitude;
-        this.latitude = latitude;
+        this.id = _id;
+        this.location = location;
     }
 
     public String getName() {
@@ -40,35 +40,28 @@ public class Meal {
         this.description = description;
     }
 
-    public int get_id() {
-        return _id;
+    public int getId() {
+        return id;
     }
 
-    public void set_id(int _id) {
-        this._id = _id;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public int getLongitude() {
-        return longitude;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setLongitude(int longitude) {
-        this.longitude = longitude;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
-    public int getLatitude() {
-        return latitude;
+    public List<PROPERTIES> getProperties() {
+        return properties;
     }
 
-    public void setLatitude(int latitude) {
-        this.latitude = latitude;
-    }
-
-    public PROPERTIES getFilter() {
-        return filter;
-    }
-
-    public void setFilter(PROPERTIES filter) {
-        this.filter = filter;
+    public void setProperties
+            (List<PROPERTIES> filter) {
+        this.properties = filter;
     }
 }

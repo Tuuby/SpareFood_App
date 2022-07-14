@@ -4,16 +4,29 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
+import android.graphics.Picture;
+import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
@@ -37,14 +50,26 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.xml.transform.Result;
+
+import de.thb.sparefood_app.MainActivity;
 import de.thb.sparefood_app.R;
 import de.thb.sparefood_app.databinding.FragmentNewEntryBinding;
-import de.thb.sparefood_app.threading.ApplicationExecutors;
 
+import de.thb.sparefood_app.model.PROPERTIES;
+import de.thb.sparefood_app.threading.ApplicationExecutors;
 
 public class NewEntryFragment extends Fragment {
 
     private FragmentNewEntryBinding binding;
+
+    EditText mealName;
+    EditText mealDescription;
+    MaterialButton submitEntryBtn;
+
+    public static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+    ActivityResultLauncher<String> requestPermissionLauncher;
+
     MaterialButton filterButtonDummy;
     private ImageCapture imageCapture;
     private ExecutorService cameraExecutor;
@@ -60,12 +85,119 @@ public class NewEntryFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NewEntryViewModel plusViewModel =
+        NewEntryViewModel newEntryViewModel =
                 new ViewModelProvider(this).get(NewEntryViewModel.class);
 
         binding = FragmentNewEntryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        mealName = (EditText) binding.mealName;
+        mealDescription = (EditText) binding.mealDescription;
+        submitEntryBtn = (MaterialButton) binding.submitEntryBtn;
+
+        if (newEntryViewModel.getMealImage() != null) {cameraButton.setImageBitmap(newEntryViewModel.getMealImage());}
+        if (newEntryViewModel.getMealName() != null) {mealName.setText(newEntryViewModel.getMealName());}
+        if (newEntryViewModel.getMealDescription() != null) {mealDescription.setText(newEntryViewModel.getMealDescription());}
+
+        MaterialButton fishButton = binding.fishButton;
+        fishButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.NO_FISH, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.fisch_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.fisch_neutral));
+            }
+        });
+
+        MaterialButton lactoseButton = binding.lactoseButton;
+        lactoseButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.NO_LACTOSE, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.laktose_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.laktose_neutral));
+            }
+        });
+
+        MaterialButton proteinButton = binding.proteinButton;
+        proteinButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.PROTEIN, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.proteinreich_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.proteinreich_neutral));
+            }
+        });
+
+        MaterialButton nutsButton = binding.nutsButton;
+        nutsButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.NO_NUTS, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.schalenfruechte_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.schalenfruechte_neutral));
+            }
+        });
+
+        MaterialButton hotButton = binding.hotButton;
+        hotButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.NOT_HOT, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.scharf_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.scharf_neutral));
+            }
+        });
+
+        MaterialButton porkButton = binding.porkButton;
+        porkButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.NO_PORK, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.schwein_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.schwein_neutral));
+            }
+        });
+
+        MaterialButton soyButton = binding.soyButton;
+        soyButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.SOY, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.soja_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.soja_neutral));
+            }
+        });
+
+        MaterialButton veganButton = binding.veganButton;
+        veganButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.VEGAN, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.vegan_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.vegan_neutral));
+            }
+        });
+
+        MaterialButton vegetarianButton = binding.vegetarianButton;
+        vegetarianButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.VEGETARIAN, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.vegetarisch_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.vegetarisch_neutral));
+            }
+        });
+
+        MaterialButton wheatButton = binding.wheatButton;
+        wheatButton.addOnCheckedChangeListener((button, isChecked) -> {
+            newEntryViewModel.setFilter(PROPERTIES.NO_WHEAT, isChecked);
+            if (isChecked) {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.weizen_aktiv));
+            } else {
+                button.setIcon(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.weizen_neutral));
+            }
+        });
 
         executors = new ApplicationExecutors();
 
@@ -93,6 +225,7 @@ public class NewEntryFragment extends Fragment {
         floatingActionButton.setVisibility(View.GONE);
         appBarLayout.setVisibility(View.GONE);
 
+
         ImageButton camera_open_id = (ImageButton) binding.cameraButton;
         camera_open_id.setOnClickListener(v -> {
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
@@ -115,13 +248,37 @@ public class NewEntryFragment extends Fragment {
             }
         });
 
-        filterButtonDummy = (MaterialButton) binding.filterButtonDummy;
-        filterButtonDummy.setSelected(false);
-        filterButtonDummy.setOnClickListener(new View.OnClickListener() {
+        mealName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                newEntryViewModel.setMealName(mealName.getText().toString());
+            }
+        });
+
+        mealName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                newEntryViewModel.setMealDescription(mealDescription.getText().toString());
+            }
+        });
+
+        submitEntryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                toggleFilterButton();
+                //TODO
+                newEntryViewModel.submitNewEntry();
             }
         });
 

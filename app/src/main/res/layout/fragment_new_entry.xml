@@ -35,79 +35,361 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/editTextTextPersonName"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/mealNameWrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="40dp"
-            android:ems="10"
-            android:hint="Name des Gerichtes"
+            android:hint="@string/meal_name_hint"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cameraButton" />
+            app:layout_constraintTop_toBottomOf="@+id/cameraButton"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="40dp"
+            >
 
-        <EditText
-            android:id="@+id/editTextTextMultiLine"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/mealName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/mealDescriptionWrapper"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="40dp"
-            android:ems="10"
-            android:gravity="start|top"
-            android:hint="Beschreibung"
+            android:hint="@string/meal_description_hint"
             android:inputType="textMultiLine"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+            app:layout_constraintTop_toBottomOf="@+id/mealNameWrapper"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="40dp"
+            android:ems="10"
+            android:gravity="top|start"
+            >
 
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/mealDescription"
+                android:gravity="top|start"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+<!--        <Button-->
+<!--            android:id="@+id/filterButtonDummy"-->
 <!--            style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
-<!--            app:backgroundTint="@android:color/holo_orange_dark"-->
-        <Button
-            android:id="@+id/filterButtonDummy"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="50dp"
-            android:insetLeft="0dp"
-            android:insetTop="0dp"
-            android:insetRight="0dp"
-            android:insetBottom="0dp"
-            android:padding="0dp"
-            app:icon="@drawable/ic_baseline_fastfood_24"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
-            app:iconSize="24dp"
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_marginTop="50dp"-->
+<!--            android:insetLeft="0dp"-->
+<!--            android:insetTop="0dp"-->
+<!--            android:insetRight="0dp"-->
+<!--            android:insetBottom="0dp"-->
+<!--            android:padding="0dp"-->
+<!--            app:icon="@drawable/ic_baseline_fastfood_24"-->
+<!--            app:iconGravity="textStart"-->
+<!--            app:iconPadding="0dp"-->
+<!--            app:iconSize="24dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/mealDescriptionWrapper"-->
+<!--            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Circle"-->
+<!--            />-->
+
+        <!--        <com.google.android.material.button.MaterialButton-->
+<!--            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_marginTop="50dp"-->
+<!--            android:insetLeft="0dp"-->
+<!--            android:insetTop="0dp"-->
+<!--            android:insetRight="0dp"-->
+<!--            android:insetBottom="0dp"-->
+<!--            android:padding="0dp"-->
+<!--            app:icon="@drawable/ic_baseline_fastfood_24"-->
+<!--            app:iconGravity="textStart"-->
+<!--            app:iconPadding="0dp"-->
+<!--            app:iconSize="24dp"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/filterButtonDummy"-->
+<!--            app:layout_constraintHorizontal_bias="0.305"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/mealDescriptionWrapper"-->
+<!--            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />-->
+
+        <GridLayout
+            android:id="@+id/filterButtonGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="10dp"
+            android:columnCount="4"
+            android:paddingRight="10dp"
+            android:rowCount="3"
+            app:layout_constraintBottom_toTopOf="@+id/submitEntryBtn"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Circle"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/mealDescriptionWrapper"
+            app:layout_constraintVertical_bias="0.0">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/fishButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="12dp"
+                android:checkable="true"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:icon="@drawable/fisch_neutral"
+                app:iconPadding="0dp"
+                app:iconTint="@null"
+                app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/lactoseButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="12dp"
+                android:checkable="true"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:icon="@drawable/laktose_neutral"
+                app:iconPadding="0dp"
+                app:iconTint="@null"
+                app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/proteinButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="12dp"
+
+                android:checkable="true"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:icon="@drawable/proteinreich_neutral"
+                app:iconPadding="0dp"
+                app:iconTint="@null"
+                app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/nutsButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="12dp"
+
+                android:checkable="true"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:icon="@drawable/schalenfruechte_neutral"
+                app:iconPadding="0dp"
+                app:iconTint="@null"
+                app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/hotButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="12dp"
+                android:checkable="true"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:icon="@drawable/scharf_neutral"
+                app:iconPadding="0dp"
+                app:iconTint="@null"
+                app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/porkButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="12dp"
+                android:checkable="true"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:icon="@drawable/schwein_neutral"
+                app:iconPadding="0dp"
+                app:iconTint="@null"
+                app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/soyButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="12dp"
+                android:checkable="true"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:icon="@drawable/soja_neutral"
+                app:iconPadding="0dp"
+                app:iconTint="@null"
+                app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/veganButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="12dp"
+                android:checkable="true"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:icon="@drawable/vegan_neutral"
+                app:iconPadding="0dp"
+                app:iconTint="@null"
+                app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/vegetarianButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="12dp"
+                android:layout_column="1"
+                android:checkable="true"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:icon="@drawable/vegetarisch_neutral"
+                app:iconPadding="0dp"
+                app:iconTint="@null"
+                app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/wheatButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_column="2"
+                android:layout_margin="12dp"
+                android:checkable="true"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:icon="@drawable/weizen_neutral"
+                app:iconPadding="0dp"
+                app:iconTint="@null"
+                app:layout_constraintBottom_toTopOf="@+id/submitEntryBtn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/filterButtonGrid"
+                app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
+
+
+        </GridLayout>
+
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+            android:id="@+id/datePicker"
             android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            app:icon="@drawable/ic_baseline_calendar_month_24"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="30dp"
+
+            app:layout_constraintBottom_toTopOf="@+id/submitEntryBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filterButtonGrid">
+
+        </com.google.android.material.button.MaterialButton>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/timePicker"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            app:icon="@drawable/ic_baseline_watch_later_24"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="30dp"
+
+            app:layout_constraintBottom_toTopOf="@+id/submitEntryBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filterButtonGrid">
+
+        </com.google.android.material.button.MaterialButton>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/submitEntryBtn"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="100dp"
             android:layout_height="50dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="150dp"
+            android:layout_marginBottom="20dp"
             android:insetLeft="0dp"
             android:insetTop="0dp"
             android:insetRight="0dp"
             android:insetBottom="0dp"
             android:padding="0dp"
-            app:icon="@drawable/ic_baseline_fastfood_24"
+            app:icon="@drawable/ic_baseline_check_24"
             app:iconGravity="textStart"
             app:iconPadding="0dp"
-            app:iconSize="24dp"
-            app:layout_constraintEnd_toStartOf="@+id/filterButtonDummy"
-            app:layout_constraintHorizontal_bias="0.305"
+            app:iconSize="36dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
+            app:layout_constraintTop_toBottomOf="@+id/filterButtonGrid"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

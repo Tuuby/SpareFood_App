@@ -1,42 +1,45 @@
 package de.thb.sparefood_app.ui.new_entry;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
+import android.graphics.Matrix;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
+import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.ImageProxy;
+import androidx.camera.core.impl.utils.executor.CameraXExecutors;
+import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.common.util.concurrent.ListenableFuture;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.nio.ByteBuffer;
+import java.security.Permissions;
+import java.security.acl.Permission;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import de.thb.sparefood_app.R;
 import de.thb.sparefood_app.databinding.FragmentNewEntryBinding;
+import de.thb.sparefood_app.threading.ApplicationExecutors;
 
 
 public class NewEntryFragment extends Fragment {
@@ -46,8 +49,17 @@ public class NewEntryFragment extends Fragment {
     // Define the button and imageview type variable
     ImageButton camera_open_id;
     MaterialButton filterButtonDummy;
-    String currentPhotoPath;
+    private ImageCapture imageCapture;
+    private ExecutorService cameraExecutor;
+    private ApplicationExecutors executors;
 
+    private final ActivityResultLauncher<String> requestPermissionsLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+        if (isGranted) {
+            // Do something
+        } else {
+            Snackbar.make(binding.getRoot(), "Permissions needed for this feature", Snackbar.LENGTH_LONG).show();
+        }
+    });
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -57,54 +69,41 @@ public class NewEntryFragment extends Fragment {
         binding = FragmentNewEntryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        camera_open_id = (ImageButton) binding.cameraButton;
+        executors = new ApplicationExecutors();
 
-        ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this.requireContext());
+        cameraProviderFuture.addListener(() -> {
+            try {
+                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                CameraSelector cameraSelector = new CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build();
+                cameraExecutor = Executors.newSingleThreadExecutor();
+
+                imageCapture = new ImageCapture.Builder().setTargetRotation(Surface.ROTATION_0).build();
+
+                cameraProvider.bindToLifecycle(getViewLifecycleOwner(), cameraSelector, imageCapture);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }, ContextCompat.getMainExecutor(this.requireContext()));
+
+        camera_open_id = (ImageButton) binding.cameraButton;
+        camera_open_id.setOnClickListener(v -> {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                imageCapture.takePicture(cameraExecutor, new ImageCapture.OnImageCapturedCallback() {
                     @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            Intent data = result.getData();
-                            Log.d("DUMMY", "DATA FROM INTENT" + data);
-                            galleryAddPic();
-                            File photoTest = getActivity().getExternalFilesDir(currentPhotoPath);
-                            Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-                            camera_open_id.setImageBitmap(bitmap);
-                        }
+                    public void onCaptureSuccess(@NonNull ImageProxy image) {
+                        executors.getMainThread().execute(() -> {
+                            camera_open_id.setImageBitmap(imageProxyToBitmap(image));
+                        });
+                    }
+
+                    @Override
+                    public void onError(@NonNull ImageCaptureException exception) {
+                        Snackbar.make(root, "Image capture failed.", Snackbar.LENGTH_LONG).show();
                     }
                 });
-
-        try {
-            Log.d("FileTest TAG", "" + createImageFile());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        camera_open_id.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                // Ensure that there's a camera activity to handle the intent
-                if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    // Create the File where the photo should go
-                    File photoFile = null;
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException ex) {
-                        // Error occurred while creating the File
-                    }
-                    // Continue only if the File was successfully created
-                    if (photoFile != null) {
-                        Uri photoURI = FileProvider.getUriForFile(getActivity(),
-                                "com.example.android.fileprovider",
-                                photoFile);
-                        Log.d("dummytag", "" + photoURI + " STRUINGslefjwei" + MediaStore.EXTRA_OUTPUT);
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                        someActivityResultLauncher.launch(takePictureIntent);
-                    }
-                }
+            } else {
+                requestPermissionsLauncher.launch(Manifest.permission.CAMERA);
             }
         });
 
@@ -121,99 +120,26 @@ public class NewEntryFragment extends Fragment {
         return root;
     }
 
+    private Bitmap imageProxyToBitmap(ImageProxy image) {
+        ImageProxy.PlaneProxy planeProxy = image.getPlanes()[0];
+        ByteBuffer buffer = planeProxy.getBuffer();
+        byte[] bytes = new byte[buffer.remaining()];
+        buffer.get(bytes);
+
+        Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bm, bm.getWidth(), bm.getHeight(), true);
+        return Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+    }
+
     public void toggleFilterButton () {
         filterButtonDummy.setSelected(!filterButtonDummy.isSelected());
         filterButtonDummy.setBackgroundTintList(getActivity().getResources().getColorStateList(R.color.color_state_list_filter_button_background));
         filterButtonDummy.setRippleColor(getActivity().getResources().getColorStateList(R.color.color_state_list_filter_button_icon));
         filterButtonDummy.setIconTint(getActivity().getResources().getColorStateList(R.color.color_state_list_filter_button_icon));
     }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//        File f = new File(currentPhotoPath);
-        File f = new File(currentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        String[] scanFileArray = {currentPhotoPath};
-        MediaScannerConnection.scanFile(getActivity(), scanFileArray,
-                null, null);
-        mediaScanIntent.setData(contentUri);
-        Log.d("contentUri", currentPhotoPath + " COMP " + contentUri);
-        getActivity().sendBroadcast(mediaScanIntent);
-
-        File photoTest = getActivity().getExternalFilesDir(currentPhotoPath);
-        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-
-        //Check for External Storage Permission
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        5);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        } else {
-            // Permission has already been granted
-                MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "dummyTitle", "dummyDesc");
-        }
-    }
-
-
-
-
-//    private void dispatchTakePictureIntent() {
-//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        // Ensure that there's a camera activity to handle the intent
-//        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-//            // Create the File where the photo should go
-//            File photoFile = null;
-//            try {
-//                photoFile = createImageFile();
-//            } catch (IOException ex) {
-//                // Error occurred while creating the File
-//            }
-//            // Continue only if the File was successfully created
-//            if (photoFile != null) {
-//                Uri photoURI = FileProvider.getUriForFile(this,
-//                        "com.example.android.fileprovider",
-//                        photoFile);
-//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-//                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-//            }
-//        }
-//    }
-
-
-
 
     @Override
     public void onDestroyView() {

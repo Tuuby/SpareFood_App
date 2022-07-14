@@ -93,7 +93,9 @@ public class NewEntryFragment extends Fragment {
                     @Override
                     public void onCaptureSuccess(@NonNull ImageProxy image) {
                         executors.getMainThread().execute(() -> {
-                            camera_open_id.setImageBitmap(imageProxyToBitmap(image));
+                            Bitmap capturedImage = imageProxyToBitmap(image);
+                            plusViewModel.setCapturedImage(capturedImage);
+                            camera_open_id.setImageBitmap(capturedImage);
                         });
                     }
 

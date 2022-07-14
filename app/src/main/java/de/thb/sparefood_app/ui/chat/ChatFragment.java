@@ -24,6 +24,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
@@ -75,11 +76,11 @@ public class ChatFragment extends Fragment {
         BottomNavigationView navView = getActivity().findViewById(R.id.nav_view);
         BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottom_app_bar);
         FloatingActionButton floatingActionButton = getActivity().findViewById(R.id.fab);
+        AppBarLayout appBarLayout = getActivity().findViewById(R.id.appBarLayout);
         navView.setVisibility(View.GONE);
         bottomAppBar.setVisibility(View.GONE);
         floatingActionButton.setVisibility(View.GONE);
-        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-        actionBar.hide();
+        appBarLayout.setVisibility(View.GONE);
 
 
         try {
@@ -113,11 +114,11 @@ public class ChatFragment extends Fragment {
         BottomNavigationView navView = getActivity().findViewById(R.id.nav_view);
         BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottom_app_bar);
         FloatingActionButton floatingActionButton = getActivity().findViewById(R.id.fab);
+        AppBarLayout appBarLayout = getActivity().findViewById(R.id.appBarLayout);
         navView.setVisibility(View.VISIBLE);
         bottomAppBar.setVisibility(View.VISIBLE);
         floatingActionButton.setVisibility(View.VISIBLE);
-        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-        actionBar.show();
+        appBarLayout.setVisibility(View.VISIBLE);
     }
 
 

@@ -19,4 +19,5 @@
     <string name="settings_menu_profil_title">Profil</string>
     <string name="settings_menu_einstellungen_title">Einstellungen</string>
     <string name="settings_menu_rechtliches_title">Rechtliches</string>
+    <string name="title_chat">Chat</string>
 </resources>

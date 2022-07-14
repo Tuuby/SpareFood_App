@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import de.thb.sparefood_app.ui.login.LoginActivity;
 import pl.droidsonroids.gif.GifImageView;
 
 public class StartupActivity extends AppCompatActivity {
@@ -35,7 +36,7 @@ public class StartupActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(Boolean available) {
-                startActivity(new Intent(StartupActivity.this, MainActivity.class));
+                startActivity(new Intent(StartupActivity.this, LoginActivity.class));
             }
         }.execute();
     }

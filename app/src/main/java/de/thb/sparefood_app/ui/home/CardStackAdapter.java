@@ -6,11 +6,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import de.thb.sparefood_app.databinding.CardLayoutBinding;
 import de.thb.sparefood_app.model.Meal;
+import de.thb.sparefood_app.model.MealRepository;
 
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
 
@@ -19,10 +23,15 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     public CardStackAdapter() {
     }
 
+    public void refresh() {
+        notifyDataSetChanged();
+    }
+
     public void setCardsList(List<Meal> meals) {
         List<Card> cards = new ArrayList<>();
         for (Meal meal: meals) {
-            cards.add(new Card(meal.getName(), meal.getDescription()));
+            String imageURL = MealRepository.getURL("meals/" + meal.getId() + "/image", null);
+            cards.add(new Card(meal.getName(), meal.getDescription(), imageURL));
         }
         cardsList.clear();
         cardsList.addAll(cards);
@@ -57,6 +66,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         public void bind(Card card) {
             cardLayoutBinding.cardTitle.setText(card.getText());
             cardLayoutBinding.cardDistance.setText(card.getDistance());
+            Picasso.get().load(card.getImageURL()).into(cardLayoutBinding.imageView);
         }
     }
 }

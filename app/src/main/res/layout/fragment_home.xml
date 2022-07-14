@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    android:background="@color/design_default_color_primary"
+    android:background="@drawable/main_background"
     android:clipChildren="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout

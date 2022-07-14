@@ -4,19 +4,10 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
-import android.graphics.Picture;
-import android.graphics.drawable.Drawable;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.View;
@@ -26,7 +17,6 @@ import android.widget.ImageButton;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
@@ -50,12 +40,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.xml.transform.Result;
-
 import de.thb.sparefood_app.MainActivity;
 import de.thb.sparefood_app.R;
 import de.thb.sparefood_app.databinding.FragmentNewEntryBinding;
-
 import de.thb.sparefood_app.model.PROPERTIES;
 import de.thb.sparefood_app.threading.ApplicationExecutors;
 
@@ -66,9 +53,6 @@ public class NewEntryFragment extends Fragment {
     EditText mealName;
     EditText mealDescription;
     MaterialButton submitEntryBtn;
-
-    public static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 100;
-    ActivityResultLauncher<String> requestPermissionLauncher;
 
     MaterialButton filterButtonDummy;
     private ImageCapture imageCapture;
@@ -94,6 +78,7 @@ public class NewEntryFragment extends Fragment {
         mealName = (EditText) binding.mealName;
         mealDescription = (EditText) binding.mealDescription;
         submitEntryBtn = (MaterialButton) binding.submitEntryBtn;
+        ImageButton cameraButton = (ImageButton) binding.cameraButton;
 
         if (newEntryViewModel.getMealImage() != null) {cameraButton.setImageBitmap(newEntryViewModel.getMealImage());}
         if (newEntryViewModel.getMealName() != null) {mealName.setText(newEntryViewModel.getMealName());}
@@ -225,17 +210,15 @@ public class NewEntryFragment extends Fragment {
         floatingActionButton.setVisibility(View.GONE);
         appBarLayout.setVisibility(View.GONE);
 
-
-        ImageButton camera_open_id = (ImageButton) binding.cameraButton;
-        camera_open_id.setOnClickListener(v -> {
+        cameraButton.setOnClickListener(v -> {
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 imageCapture.takePicture(cameraExecutor, new ImageCapture.OnImageCapturedCallback() {
                     @Override
                     public void onCaptureSuccess(@NonNull ImageProxy image) {
                         executors.getMainThread().execute(() -> {
                             Bitmap capturedImage = imageProxyToBitmap(image);
-                            plusViewModel.setCapturedImage(capturedImage);
-                            camera_open_id.setImageBitmap(capturedImage);
+                            newEntryViewModel.setMealImage(capturedImage);
+                            cameraButton.setImageBitmap(capturedImage);
                         });
                     }
                     @Override

@@ -1,11 +1,10 @@
 package de.thb.sparefood_app.ui.new_entry;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
 import android.graphics.Picture;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
@@ -16,21 +15,25 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.graphics.Matrix;
+import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
+import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.ImageProxy;
+import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -39,30 +42,46 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.common.util.concurrent.ListenableFuture;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.nio.ByteBuffer;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.xml.transform.Result;
 
 import de.thb.sparefood_app.MainActivity;
 import de.thb.sparefood_app.R;
 import de.thb.sparefood_app.databinding.FragmentNewEntryBinding;
-import de.thb.sparefood_app.model.PROPERTIES;
 
+import de.thb.sparefood_app.model.PROPERTIES;
+import de.thb.sparefood_app.threading.ApplicationExecutors;
 
 public class NewEntryFragment extends Fragment {
 
     private FragmentNewEntryBinding binding;
-    ImageButton cameraButton;
+
     EditText mealName;
     EditText mealDescription;
     MaterialButton submitEntryBtn;
 
     public static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     ActivityResultLauncher<String> requestPermissionLauncher;
+
+    MaterialButton filterButtonDummy;
+    private ImageCapture imageCapture;
+    private ExecutorService cameraExecutor;
+    private ApplicationExecutors executors;
+
+    private final ActivityResultLauncher<String> requestPermissionsLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+        if (isGranted) {
+            // Do something
+        } else {
+            Snackbar.make(binding.getRoot(), "Permissions needed for this feature", Snackbar.LENGTH_LONG).show();
+        }
+    });
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -72,7 +91,6 @@ public class NewEntryFragment extends Fragment {
         binding = FragmentNewEntryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        cameraButton = (ImageButton) binding.cameraButton;
         mealName = (EditText) binding.mealName;
         mealDescription = (EditText) binding.mealDescription;
         submitEntryBtn = (MaterialButton) binding.submitEntryBtn;
@@ -181,6 +199,23 @@ public class NewEntryFragment extends Fragment {
             }
         });
 
+        executors = new ApplicationExecutors();
+
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this.requireContext());
+        cameraProviderFuture.addListener(() -> {
+            try {
+                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                CameraSelector cameraSelector = new CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build();
+                cameraExecutor = Executors.newSingleThreadExecutor();
+
+                imageCapture = new ImageCapture.Builder().setTargetRotation(Surface.ROTATION_0).build();
+
+                cameraProvider.bindToLifecycle(getViewLifecycleOwner(), cameraSelector, imageCapture);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }, ContextCompat.getMainExecutor(this.requireContext()));
+
         BottomNavigationView navView = getActivity().findViewById(R.id.nav_view);
         BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottom_app_bar);
         FloatingActionButton floatingActionButton = getActivity().findViewById(R.id.fab);
@@ -190,42 +225,26 @@ public class NewEntryFragment extends Fragment {
         floatingActionButton.setVisibility(View.GONE);
         appBarLayout.setVisibility(View.GONE);
 
-        ActivityResultLauncher<Uri> cameraActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.TakePicture(),
-                new ActivityResultCallback<Boolean>() {
+
+        ImageButton camera_open_id = (ImageButton) binding.cameraButton;
+        camera_open_id.setOnClickListener(v -> {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                imageCapture.takePicture(cameraExecutor, new ImageCapture.OnImageCapturedCallback() {
                     @Override
-                    public void onActivityResult(Boolean result) {
-                        // do what you need with the uri here ...
-                        newEntryViewModel.generatePhoto();
-                        cameraButton.setImageBitmap(newEntryViewModel.getMealImage());
-                        galleryAddPic(newEntryViewModel.getMealImage());
+                    public void onCaptureSuccess(@NonNull ImageProxy image) {
+                        executors.getMainThread().execute(() -> {
+                            Bitmap capturedImage = imageProxyToBitmap(image);
+                            plusViewModel.setCapturedImage(capturedImage);
+                            camera_open_id.setImageBitmap(capturedImage);
+                        });
                     }
-        });
-
-        requestPermissionLauncher = registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(),
-                new ActivityResultCallback<Boolean>() {
                     @Override
-                    public void onActivityResult(Boolean result) {
-                        if (result) {
-                            // PERMISSION GRANTED
-                            cameraActivityResultLauncher.launch(newEntryViewModel.getNewPhotoUri());
-                        } else {
-                            // PERMISSION NOT GRANTED
-                            Log.d("PERMISSION", "NOT GRANTED");
-                        }
+                    public void onError(@NonNull ImageCaptureException exception) {
+                        Snackbar.make(root, "Image capture failed.", Snackbar.LENGTH_LONG).show();
                     }
-                }
-        );
-
-
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                cameraActivityResultLauncher.launch(newEntryViewModel.getNewPhotoUri());
-
+                });
+            } else {
+                requestPermissionsLauncher.launch(Manifest.permission.CAMERA);
             }
         });
 
@@ -266,37 +285,26 @@ public class NewEntryFragment extends Fragment {
         return root;
     }
 
-    protected void galleryAddPic(Bitmap bitmap) {
-        //Check for External Storage Permission
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+    private Bitmap imageProxyToBitmap(ImageProxy image) {
+        ImageProxy.PlaneProxy planeProxy = image.getPlanes()[0];
+        ByteBuffer buffer = planeProxy.getBuffer();
+        byte[] bytes = new byte[buffer.remaining()];
+        buffer.get(bytes);
 
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        5);
+        Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        } else {
-            // Permission has already been granted
-            MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "dummyTitle", "dummyDesc");
-        }
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bm, bm.getWidth(), bm.getHeight(), true);
+        return Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
     }
 
-
-
+    public void toggleFilterButton () {
+        filterButtonDummy.setSelected(!filterButtonDummy.isSelected());
+        filterButtonDummy.setBackgroundTintList(getActivity().getResources().getColorStateList(R.color.color_state_list_filter_button_background));
+        filterButtonDummy.setRippleColor(getActivity().getResources().getColorStateList(R.color.color_state_list_filter_button_icon));
+        filterButtonDummy.setIconTint(getActivity().getResources().getColorStateList(R.color.color_state_list_filter_button_icon));
+    }
 
     @Override
     public void onDestroyView() {

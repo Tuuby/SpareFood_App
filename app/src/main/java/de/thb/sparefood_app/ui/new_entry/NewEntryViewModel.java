@@ -24,6 +24,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.AndroidViewModel;
+import android.graphics.Bitmap;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -34,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import de.thb.sparefood_app.model.PROPERTIES;
+
 
 public class NewEntryViewModel extends AndroidViewModel {
 

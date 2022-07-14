@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -116,15 +117,13 @@ public class MealRepository {
         AtomicBoolean result = new AtomicBoolean(false);
 
         String request = getURL("/auth/generate-token", params);
-
         URL loginURL = new URL(request);
         HttpURLConnection loginConnection = (HttpURLConnection) loginURL.openConnection();
         loginConnection.setRequestMethod("POST");
 
         executors.getBackground().execute(() -> {
-            int responseCode = 0;
             try {
-                responseCode = loginConnection.getResponseCode();
+                int responseCode = loginConnection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(loginConnection.getInputStream()));
                     authToken = reader.readLine();
@@ -135,6 +134,28 @@ public class MealRepository {
             }
 
             loginConnection.disconnect();
+        });
+        return result.get();
+    }
+
+    public boolean likeMeal(int id) throws IOException {
+        AtomicBoolean result = new AtomicBoolean(false);
+
+        String request = getURL("/meals/" + id + "/reserve", null);
+        URL likeURL = new URL(request);
+        HttpURLConnection likeConnection = (HttpURLConnection) likeURL.openConnection();
+        likeConnection.setRequestMethod("POST");
+        likeConnection.setRequestProperty("Authorization", "Bearer " + authToken);
+
+        executors.getBackground().execute(() -> {
+            try {
+                int responseCode = likeConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    result.set(true);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
         return result.get();
     }

@@ -33,21 +33,13 @@ import de.thb.sparefood_app.threading.ApplicationExecutors;
 public class MealRepository {
     // private static final Logger logger = Logger.getLogger(MealRepository.class.getName());
     private final MutableLiveData<List<Meal>> _meals = new MutableLiveData<>();
-    private String authToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdC9zcGFyZWZvb2QiLCJ1cG4iOiJ0cm9tcGVsbEB0aC1icmFuZGVuYnVyZy5kZSIsImV4cCI6MTY1Nzg2NDYyMywiZ3JvdXBzIjpbIlVzZXIiXSwiYmlydGhkYXRlIjoiMTk5OS0wOC0xMiIsImlhdCI6MTY1NzgwNDYyMywianRpIjoiMDE1ODk0MWYtMDk5OC00NDBmLTk1ZmEtMGE4YmI4NzQ2ZmNhIn0.P7Fdg7YV9hePAmO1L8Z0vFrKv9avAq_541bE9B1O6zMDAeL-HUkFxej6mj8sXtoXDldq8keMlFO650lMPvxtF8nejOkgVwD-vuFJtL6QT7ns0KP5ZTwbr5yefRxraJ6E5cObUx0K2JzfLqkIlhqPoKNTo0TWFOneCrgH2eHe5sRnYNa3q0tM80YdiiA72sz-WxeckF4aAPVtAywRM0iSAHg_tGsKgHHLZ4UaxtcDDtI7Tgfjotdz7Ut7CmBXLMZUrbBDX060-5C-OB6nWKZPMejnrRM6KCENBIXH1oJZpbo3yC1h_dU20728QMQ6dZuIeUPLuyYYOf9XuICIxJTigQ";
+    private static String authToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdC9zcGFyZWZvb2QiLCJ1cG4iOiJ0cm9tcGVsbEB0aC1icmFuZGVuYnVyZy5kZSIsImV4cCI6MTY1Nzg2NDYyMywiZ3JvdXBzIjpbIlVzZXIiXSwiYmlydGhkYXRlIjoiMTk5OS0wOC0xMiIsImlhdCI6MTY1NzgwNDYyMywianRpIjoiMDE1ODk0MWYtMDk5OC00NDBmLTk1ZmEtMGE4YmI4NzQ2ZmNhIn0.P7Fdg7YV9hePAmO1L8Z0vFrKv9avAq_541bE9B1O6zMDAeL-HUkFxej6mj8sXtoXDldq8keMlFO650lMPvxtF8nejOkgVwD-vuFJtL6QT7ns0KP5ZTwbr5yefRxraJ6E5cObUx0K2JzfLqkIlhqPoKNTo0TWFOneCrgH2eHe5sRnYNa3q0tM80YdiiA72sz-WxeckF4aAPVtAywRM0iSAHg_tGsKgHHLZ4UaxtcDDtI7Tgfjotdz7Ut7CmBXLMZUrbBDX060-5C-OB6nWKZPMejnrRM6KCENBIXH1oJZpbo3yC1h_dU20728QMQ6dZuIeUPLuyYYOf9XuICIxJTigQ";
     private final ObjectMapper mapper;
     private final ApplicationExecutors executors;
 
     public LiveData<List<Meal>> meals = _meals;
 
     public MealRepository() {
-//        List<Meal> testMeals = new ArrayList<>();
-//        testMeals.add(new Meal("Nudeln", "mit ner tollen Sauce"));
-//        testMeals.add(new Meal("Huhn", "mit Reis und Gemüse"));
-//        testMeals.add(new Meal("Käsespetzle", "mit extra Käse"));
-//        testMeals.add(new Meal("Noch ein Gericht", "mit leckeren Zutaten"));
-//        testMeals.add(new Meal("Krabbenburger", "mit Liebe und nicht mit Magie"));
-//        testMeals.add(new Meal("Curry", "nach Thai Art mit Basmati Reis"));
-//        this._meals.setValue(testMeals);
         mapper = new ObjectMapper();
         executors = new ApplicationExecutors();
         HashMap<String, String> params = new HashMap<>();
@@ -73,6 +65,10 @@ public class MealRepository {
         }
 
         return builder.toString();
+    }
+
+    public static void setToken(String token) {
+        authToken = token;
     }
 
     public void requestMeals(Map<String, String> params) throws IOException {

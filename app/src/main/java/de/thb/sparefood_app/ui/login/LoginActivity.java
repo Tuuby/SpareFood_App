@@ -33,6 +33,7 @@ import java.util.concurrent.Executors;
 
 import de.thb.sparefood_app.MainActivity;
 import de.thb.sparefood_app.R;
+import de.thb.sparefood_app.model.MealRepository;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -166,7 +167,7 @@ public class LoginActivity extends AppCompatActivity {
         boolean success = waitForRequestToFinish();
 
         if (success) {
-            // todo persist the authToken
+            MealRepository.setToken(authToken);
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         } else {
             Toast.makeText(LoginActivity.this, "Wrong credentials", Toast.LENGTH_SHORT).show();

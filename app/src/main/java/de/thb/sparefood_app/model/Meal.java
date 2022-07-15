@@ -2,6 +2,7 @@ package de.thb.sparefood_app.model;
 
 import android.graphics.Bitmap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Meal {
@@ -25,6 +26,7 @@ public class Meal {
         this.description = description;
         this.id = _id;
         this.location = location;
+        this.properties = new ArrayList<>();
     }
 
     public String getName() {

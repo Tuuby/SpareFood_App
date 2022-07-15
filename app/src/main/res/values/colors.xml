@@ -16,4 +16,6 @@
     <color name="transparent_bg">#00000000</color>
     <color name="dark_grey">#808080</color>
     <color name="gainsboro">#dcdcdc</color>
+    <color name="colorPrimary">#735CFD</color>
+
 </resources>

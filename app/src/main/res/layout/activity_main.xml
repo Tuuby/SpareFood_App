@@ -63,6 +63,7 @@
                     android:insetRight="0dp"
                     android:insetBottom="0dp"
                     android:padding="0dp"
+                    android:backgroundTint="@color/colorPrimary"
                     app:icon="@drawable/ic_baseline_more_vert_24"
                     app:iconGravity="textStart"
                     app:iconPadding="0dp"
@@ -115,6 +116,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="16dp"
                 android:background="@drawable/transparent_background"
+                app:ActiveItemIconTint="@color/colorPrimary"
                 app:menu="@menu/bottom_nav_menu" />
 
         </com.google.android.material.bottomappbar.BottomAppBar>

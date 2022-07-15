@@ -1,7 +1,6 @@
 package de.thb.sparefood_app.ui.home;
 
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,12 +22,10 @@ import com.yuyakaido.android.cardstackview.Direction;
 import com.yuyakaido.android.cardstackview.StackFrom;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import de.thb.sparefood_app.MainActivity;
 import de.thb.sparefood_app.R;
 import de.thb.sparefood_app.databinding.FragmentHomeBinding;
-import de.thb.sparefood_app.model.MealRepository;
 import de.thb.sparefood_app.model.PROPERTIES;
 
 public class HomeFragment extends Fragment {
@@ -53,6 +50,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCardSwiped(Direction direction) {
                 Log.d("SpareFood_Debug", "You swiped to direction " + direction.name());
+                // HOW THE FUCK AM I SUPPOSED TO GET TO THE ID OF THE SWIPED CARD???????!!??!?!?!
             }
 
             @Override

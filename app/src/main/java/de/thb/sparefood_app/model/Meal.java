@@ -1,5 +1,7 @@
 package de.thb.sparefood_app.model;
 
+import android.graphics.Bitmap;
+
 import java.util.List;
 
 public class Meal {
@@ -8,6 +10,7 @@ public class Meal {
     private int id;
     private Location location;
     private List<PROPERTIES> properties;
+    private Bitmap image;
 
     public Meal() {
         this("", "", -1, null);
@@ -66,5 +69,13 @@ public class Meal {
 
     public void addProperty(PROPERTIES property) {
         this.properties.add(property);
+    }
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
     }
 }

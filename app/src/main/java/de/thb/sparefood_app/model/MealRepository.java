@@ -1,6 +1,7 @@
 package de.thb.sparefood_app.model;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.http.client.utils.URIBuilder;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -59,7 +61,7 @@ public class MealRepository {
                 .setHost("10.0.2.2:8080")
                 .setPath(path);
         if (parameters != null) {
-            for (Map.Entry<String, String> entry: parameters.entrySet()) {
+            for (Map.Entry<String, String> entry : parameters.entrySet()) {
                 builder.addParameter(entry.getKey(), entry.getValue());
             }
         }
@@ -99,8 +101,29 @@ public class MealRepository {
                         sb.append(line);
                     }
 
-                    List<Meal> mealList = mapper.readValue(sb.toString(), new TypeReference<List<Meal>>() {});
+                    List<Meal> mealList = mapper.readValue(sb.toString(), new TypeReference<List<Meal>>() {
+                    });
+
+                    for (Meal meal : mealList) {
+                        URL url = new URL("http://10.0.2.2:8080/meals/" + meal.getId() + "/image");
+                        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                        con.setRequestProperty("Authorization", "Bearer " + authToken);
+                        con.setRequestMethod("GET");
+                        con.setDoInput(true);
+                        con.setDoOutput(false);
+
+                        if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                            BufferedReader imageReader = null;
+                            try {
+                                Bitmap image = BitmapFactory.decodeStream(new BufferedInputStream(con.getInputStream()));
+                                meal.setImage(image);
+                            } catch (Exception e) {
+                                Log.e("Shit", "failed", e);
+                            }
+                        }
+                    }
                     _meals.postValue(mealList);
+
 
                 } catch (IOException e) {
                     e.printStackTrace();

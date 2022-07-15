@@ -1,14 +1,16 @@
 package de.thb.sparefood_app.ui.home;
 
+import android.graphics.Bitmap;
+
 public class Card {
     private final String text;
     private final String distance;
-    private final String imageURL;
+    private final Bitmap image;
 
-    public Card(String text, String distance, String imageURL) {
+    public Card(String text, String distance, Bitmap image) {
         this.text = text;
         this.distance = distance;
-        this.imageURL = imageURL;
+        this.image = image;
     }
 
     public String getText() {
@@ -19,7 +21,7 @@ public class Card {
         return distance;
     }
 
-    public String getImageURL() {
-        return imageURL;
+    public Bitmap getImageURL() {
+        return image;
     }
 }

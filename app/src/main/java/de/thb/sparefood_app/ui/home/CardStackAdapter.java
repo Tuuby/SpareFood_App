@@ -30,8 +30,8 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     public void setCardsList(List<Meal> meals) {
         List<Card> cards = new ArrayList<>();
         for (Meal meal: meals) {
-            String imageURL = MealRepository.getURL("meals/" + meal.getId() + "/image", null);
-            cards.add(new Card(meal.getName(), meal.getDescription(), imageURL));
+            // String imageURL = MealRepository.getURL("meals/" + meal.getId() + "/image", null);
+            cards.add(new Card(meal.getName(), meal.getDescription(), meal.getImage()));
         }
         cardsList.clear();
         cardsList.addAll(cards);
@@ -66,7 +66,8 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         public void bind(Card card) {
             cardLayoutBinding.cardTitle.setText(card.getText());
             cardLayoutBinding.cardDistance.setText(card.getDistance());
-            Picasso.get().load(card.getImageURL()).into(cardLayoutBinding.imageView);
+            // Picasso.get().load(card.getImageURL()).into(cardLayoutBinding.imageView);
+            cardLayoutBinding.imageView.setImageBitmap(card.getImageURL());
         }
     }
 }

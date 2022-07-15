@@ -45,7 +45,7 @@ public class HomeViewModel extends ViewModel {
         }
         params.put("longitude", "52.5");
         params.put("latitude", "13.4");
-        mealRepository.requestMeals(params);
+        //mealRepository.requestMeals(params);
     }
 
     private String getPropertyName(int index) {
